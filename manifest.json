@@ -1,0 +1,52 @@
+{
+  "name": "Third Eye by Meghulo",
+  "short_name": "Third Eye",
+  "description": "অফলাইন-ফার্স্ট অনুসন্ধানী ফিল্ড-রিপোর্টিং টুল",
+  "lang": "bn",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0a1f3d",
+  "background_color": "#0a1f3d",
+  "categories": ["productivity", "news", "utilities"],
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "নতুন এন্ট্রি",
+      "short_name": "এন্ট্রি",
+      "url": "./index.html?action=entry"
+    },
+    {
+      "name": "নতুন কেস",
+      "short_name": "কেস",
+      "url": "./index.html?action=case"
+    }
+  ]
+}

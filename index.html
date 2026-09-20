@@ -1,0 +1,5113 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a1f3d">
+<meta name="description" content="Third Eye by Meghulo — অফলাইন অনুসন্ধানী ফিল্ড-রিপোর্টিং টুল">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Third Eye">
+<meta name="mobile-web-app-capable" content="yes">
+
+<title>Third Eye by Meghulo</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon-192.svg">
+<link rel="apple-touch-icon" href="icon-192.svg">
+
+<!-- বাংলা ফন্ট -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — CSS ভিত্তি
+   ═══════════════════════════════════════════════ */
+
+/* ─── রঙের সিস্টেম ─── */
+:root{
+  --navy:       #0a1f3d;
+  --navy2:      #1a3d6b;
+  --navy3:      #14305a;
+  --gold:       #d4a843;
+  --gold-soft:  #faf3e0;
+  --gold-dark:  #b8912f;
+  --bg:         #f5f7fa;
+  --white:      #ffffff;
+  --ink:        #0d1421;
+  --ink2:       #3d4655;
+  --ink3:       #6b7583;
+  --line:       #e4e8ef;
+  --line2:      #d3dae5;
+  --red:        #c02a2a;
+  --red-soft:   #fdeaea;
+  --green:      #0f7a4a;
+  --green-soft: #e3f4ec;
+  --amber:      #b86a00;
+  --amber-soft: #fdf3e0;
+  --purple:     #6a1b9a;
+  --purple-soft:#f3e8fa;
+
+  /* Shadow */
+  --sh-sm: 0 1px 2px rgba(10,31,61,.06);
+  --sh:    0 2px 8px rgba(10,31,61,.08), 0 1px 2px rgba(10,31,61,.04);
+  --sh-md: 0 4px 16px rgba(10,31,61,.10), 0 2px 4px rgba(10,31,61,.05);
+  --sh-lg: 0 12px 32px rgba(10,31,61,.15), 0 4px 8px rgba(10,31,61,.06);
+
+  /* Radius */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r:    14px;
+  --r-lg: 20px;
+  --r-pill: 999px;
+
+  /* Spacing */
+  --pad: 14px;
+  --card-pad: 16px;
+
+  /* Layout */
+  --topbar-h: 58px;
+  --nav-h:    64px;
+
+  /* Animation */
+  --t-fast: 150ms ease;
+  --t:      220ms cubic-bezier(.4,.0,.2,1);
+  --t-slow: 320ms cubic-bezier(.4,.0,.2,1);
+}
+
+/* ─── Reset ─── */
+*,*::before,*::after{
+  margin:0; padding:0; box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body { height: 100%; }
+html { font-size: 16px; }
+
+body{
+  font-family: 'Noto Sans Bengali', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+button, input, textarea, select {
+  font: inherit; color: inherit;
+  border: none; outline: none; background: none;
+}
+button { cursor: pointer; user-select: none; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+input[type="date"], input[type="time"] {
+  -webkit-appearance: none; appearance: none;
+}
+
+/* ─── স্ক্রলবার ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--line2); border-radius: 3px;
+}
+
+/* ─── সিলেকশন ─── */
+::selection { background: var(--gold); color: var(--navy); }
+
+/* ─── অ্যাপ শেল ─── */
+#app{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* টপবার */
+#topbar{
+  position: sticky; top: 0; z-index: 40;
+  height: var(--topbar-h);
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+  color: var(--white);
+  display: flex; align-items: center;
+  padding: 0 var(--pad);
+  gap: 12px;
+  box-shadow: var(--sh-md);
+}
+#topbar .brand{
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 17px;
+  letter-spacing: .2px;
+}
+#topbar .brand .eye{
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  background: rgba(212,168,67,.15);
+  border: 1px solid rgba(212,168,67,.4);
+  border-radius: 50%;
+  font-size: 17px;
+}
+#topbar .brand .brand-name{ color: var(--white); }
+#topbar .brand .brand-sub{
+  display: block; font-size: 10px;
+  color: var(--gold); font-weight: 500;
+  letter-spacing: .5px; margin-top: -2px;
+}
+#topbar .spacer{ flex: 1; }
+#topbar .top-btn{
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  color: var(--white);
+  font-size: 18px;
+  transition: background var(--t-fast);
+}
+#topbar .top-btn:active{ background: rgba(255,255,255,.15); }
+#installBtn{
+  display: none;
+  padding: 6px 12px; height: 34px;
+  background: var(--gold); color: var(--navy);
+  border-radius: var(--r-pill);
+  font-size: 12px; font-weight: 700;
+  align-items: center; gap: 4px;
+}
+#installBtn.show{ display: inline-flex; }
+#installBtn:active{ background: var(--gold-dark); }
+
+/* অফলাইন ইন্ডিকেটর */
+#offlineBar{
+  display: none;
+  padding: 6px var(--pad);
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: 12px; font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid #f0dba8;
+}
+#offlineBar.show{ display: block; }
+
+/* মূল কনটেন্ট */
+#content{
+  flex: 1;
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0) + 12px);
+  min-height: 0;
+}
+
+/* ভিউ */
+.view{
+  display: none;
+  padding: var(--pad);
+  animation: fadeUp var(--t) both;
+}
+.view.active{ display: block; }
+@keyframes fadeUp{
+  from{ opacity: 0; transform: translateY(6px); }
+  to  { opacity: 1; transform: translateY(0); }
+}
+
+/* বটম ন্যাভিগেশন */
+#bottomNav{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 50;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  box-shadow: 0 -2px 12px rgba(10,31,61,.06);
+}
+#bottomNav .nav-item{
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px;
+  color: var(--ink3);
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 6px 2px;
+  transition: color var(--t-fast);
+  position: relative;
+}
+#bottomNav .nav-item .ico{
+  font-size: 20px;
+  line-height: 1;
+  transition: transform var(--t-fast);
+}
+#bottomNav .nav-item.active{
+  color: var(--navy);
+  font-weight: 700;
+}
+#bottomNav .nav-item.active .ico{ transform: translateY(-2px); }
+#bottomNav .nav-item.active::before{
+  content: "";
+  position: absolute; top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 30px; height: 3px;
+  background: var(--gold);
+  border-radius: 0 0 3px 3px;
+}
+#bottomNav .nav-item:active .ico{ transform: scale(.9); }
+
+/* সেফ এরিয়া */
+@supports(padding: env(safe-area-inset-top)){
+  #topbar{ padding-top: env(safe-area-inset-top); height: calc(var(--topbar-h) + env(safe-area-inset-top)); }
+}
+
+/* হেল্পার ক্লাস */
+.hidden{ display: none !important; }
+.mt-8 { margin-top: 8px; }
+.mt-12{ margin-top: 12px; }
+.mt-16{ margin-top: 16px; }
+.mb-12{ margin-bottom: 12px; }
+.center{ text-align: center; }
+.row{ display: flex; align-items: center; gap: 8px; }
+.row-between{ display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.grow{ flex: 1; }
+
+/* রিডিউস মোশন */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+/* ═══════════════════════════════════════════════
+   কার্ড
+   ═══════════════════════════════════════════════ */
+.card{
+  background: var(--white);
+  border-radius: var(--r);
+  padding: var(--card-pad);
+  box-shadow: var(--sh);
+  border: 1px solid var(--line);
+  margin-bottom: 12px;
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+}
+.card.clickable:active{
+  transform: scale(.985);
+  box-shadow: var(--sh-sm);
+}
+.card-flat{ box-shadow: none; border: 1px solid var(--line); }
+
+/* সেকশন হেডার */
+.section-head{
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 18px 0 10px;
+  padding: 0 2px;
+}
+.section-head h2{
+  font-size: 15px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; gap: 6px;
+}
+.section-head .link{
+  font-size: 12.5px; color: var(--navy2);
+  font-weight: 600; padding: 4px 6px;
+}
+.section-head .link:active{ color: var(--gold-dark); }
+
+/* ═══════════════════════════════════════════════
+   বাটন
+   ═══════════════════════════════════════════════ */
+.btn{
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: var(--r-sm);
+  font-size: 14px; font-weight: 600;
+  transition: transform var(--t-fast), background var(--t-fast), opacity var(--t-fast);
+  white-space: nowrap;
+}
+.btn:active{ transform: scale(.97); }
+.btn:disabled{ opacity: .5; pointer-events: none; }
+
+.btn-primary{
+  background: var(--navy); color: var(--white);
+  box-shadow: 0 2px 6px rgba(10,31,61,.25);
+}
+.btn-primary:active{ background: var(--navy3); }
+
+.btn-gold{
+  background: var(--gold); color: var(--navy);
+  box-shadow: 0 2px 6px rgba(212,168,67,.35);
+}
+.btn-gold:active{ background: var(--gold-dark); color: var(--white); }
+
+.btn-ghost{
+  background: transparent; color: var(--ink2);
+  border: 1px solid var(--line2);
+}
+.btn-ghost:active{ background: var(--bg); }
+
+.btn-danger{
+  background: var(--red-soft); color: var(--red);
+  border: 1px solid #f4c7c7;
+}
+.btn-danger:active{ background: var(--red); color: var(--white); }
+
+.btn-block{ width: 100%; }
+.btn-sm{ min-height: 36px; padding: 6px 12px; font-size: 13px; }
+.btn-lg{ min-height: 50px; font-size: 15px; }
+
+/* আইকন বাটন */
+.icon-btn{
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  color: var(--ink2);
+  font-size: 17px;
+  transition: background var(--t-fast);
+}
+.icon-btn:active{ background: var(--line); }
+.icon-btn.danger{ color: var(--red); }
+
+/* ═══════════════════════════════════════════════
+   ব্যাজ / স্ট্যাটাস পিল / চিপস
+   ═══════════════════════════════════════════════ */
+.badge{
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  font-size: 11.5px; font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.badge-active   { background: var(--amber-soft); color: var(--amber); }
+.badge-ready    { background: var(--green-soft); color: var(--green); }
+.badge-published{ background: var(--purple-soft); color: var(--purple); }
+.badge-archived { background: var(--line); color: var(--ink3); }
+.badge-info     { background: #e7f1fb; color: var(--navy2); }
+.badge-red      { background: var(--red-soft); color: var(--red); }
+.badge-gold     { background: var(--gold-soft); color: var(--gold-dark); }
+
+/* চিপস স্ক্রল রো */
+.chips{
+  display: flex; gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 10px;
+  margin: 0 -2px;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar{ display: none; }
+.chip{
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  border: 1px solid var(--line2);
+  color: var(--ink2);
+  font-size: 12.5px; font-weight: 600;
+  transition: all var(--t-fast);
+}
+.chip.active{
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+  box-shadow: 0 2px 6px rgba(10,31,61,.2);
+}
+.chip:active{ transform: scale(.96); }
+
+/* ═══════════════════════════════════════════════
+   ফর্ম
+   ═══════════════════════════════════════════════ */
+.form-group{ margin-bottom: 14px; }
+.form-group label{
+  display: block;
+  font-size: 13px; font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+.form-group label .req{ color: var(--red); margin-left: 2px; }
+
+.input, .textarea, .select{
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line2);
+  background: var(--white);
+  color: var(--ink);
+  font-size: 14.5px;
+  transition: border var(--t-fast), box-shadow var(--t-fast);
+}
+.input:focus, .textarea:focus, .select:focus{
+  border-color: var(--navy2);
+  box-shadow: 0 0 0 3px rgba(26,61,107,.1);
+}
+.input::placeholder, .textarea::placeholder{ color: var(--ink3); opacity: .7; }
+.textarea{ min-height: 100px; resize: vertical; line-height: 1.55; }
+.select{
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' stroke='%236b7583' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+
+/* ২ কলাম রো */
+.form-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ═══════════════════════════════════════════════
+   স্ট্যাট কার্ড (হোম)
+   ═══════════════════════════════════════════════ */
+.stat-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.stat-card{
+  background: var(--white);
+  border-radius: var(--r);
+  padding: 14px;
+  border: 1px solid var(--line);
+  box-shadow: var(--sh-sm);
+  display: flex; align-items: center; gap: 12px;
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+}
+.stat-card:active{ transform: scale(.97); box-shadow: var(--sh-sm); }
+.stat-card .ico{
+  width: 42px; height: 42px;
+  flex-shrink: 0;
+  display: grid; place-items: center;
+  border-radius: var(--r-sm);
+  font-size: 20px;
+  background: var(--gold-soft);
+}
+.stat-card .ico.navy{ background: #e6edf7; }
+.stat-card .ico.green{ background: var(--green-soft); }
+.stat-card .ico.red{ background: var(--red-soft); }
+.stat-card .info{ min-width: 0; flex: 1; }
+.stat-card .num{
+  font-size: 22px; font-weight: 700; color: var(--ink);
+  line-height: 1.1;
+}
+.stat-card .lbl{
+  font-size: 11.5px; color: var(--ink3); font-weight: 500;
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════════
+   লিস্ট আইটেম
+   ═══════════════════════════════════════════════ */
+.list-item{
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  margin-bottom: 8px;
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+}
+.list-item:active{ transform: scale(.985); box-shadow: var(--sh-sm); }
+.list-item .li-ico{
+  width: 40px; height: 40px;
+  flex-shrink: 0;
+  display: grid; place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--gold-soft);
+  font-size: 18px;
+}
+.list-item .li-body{ flex: 1; min-width: 0; }
+.list-item .li-title{
+  font-size: 14.5px; font-weight: 600; color: var(--ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.list-item .li-sub{
+  font-size: 12px; color: var(--ink3);
+  margin-top: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.list-item .li-tail{
+  flex-shrink: 0; color: var(--ink3); font-size: 16px;
+}
+
+/* কেস কার্ড */
+.case-card{
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--sh-sm);
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+}
+.case-card:active{ transform: scale(.985); box-shadow: var(--sh); }
+.case-card .cc-head{
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 10px; margin-bottom: 8px;
+}
+.case-card .cc-title{
+  font-size: 15px; font-weight: 700; color: var(--ink);
+  line-height: 1.35;
+  flex: 1;
+}
+.case-card .cc-desc{
+  font-size: 12.5px; color: var(--ink3);
+  margin-bottom: 10px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.case-card .cc-meta{
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: var(--ink3);
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  flex-wrap: wrap;
+}
+.case-card .cc-meta span{ display: inline-flex; align-items: center; gap: 4px; }
+
+/* ═══════════════════════════════════════════════
+   মিডিয়া গ্রিড
+   ═══════════════════════════════════════════════ */
+.media-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.media-tile{
+  position: relative;
+  aspect-ratio: 1/1;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.media-tile img{
+  width: 100%; height: 100%; object-fit: cover;
+}
+.media-tile .mt-ico{
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  font-size: 26px;
+  background: linear-gradient(135deg, var(--navy3), var(--navy));
+  color: var(--gold);
+}
+.media-tile .mt-badge{
+  position: absolute; bottom: 4px; left: 4px;
+  padding: 2px 6px;
+  background: rgba(10,31,61,.75);
+  color: var(--white);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.media-tile .mt-tag{
+  position: absolute; top: 4px; right: 4px;
+  padding: 2px 6px;
+  background: var(--gold);
+  color: var(--navy);
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════
+   এম্পটি স্টেট
+   ═══════════════════════════════════════════════ */
+.empty{
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ink3);
+}
+.empty .em-ico{ font-size: 46px; margin-bottom: 10px; opacity: .55; }
+.empty .em-title{ font-size: 15px; font-weight: 600; color: var(--ink2); margin-bottom: 6px; }
+.empty .em-sub{ font-size: 12.5px; line-height: 1.5; }
+
+/* ═══════════════════════════════════════════════
+   ফ্লোটিং অ্যাকশন বাটন
+   ═══════════════════════════════════════════════ */
+.fab{
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0) + 16px);
+  z-index: 45;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: var(--navy);
+  font-size: 26px; font-weight: 700;
+  display: grid; place-items: center;
+  box-shadow: 0 6px 18px rgba(212,168,67,.45), 0 2px 6px rgba(10,31,61,.2);
+  transition: transform var(--t-fast);
+}
+.fab:active{ transform: scale(.9) rotate(90deg); }
+
+/* ═══════════════════════════════════════════════
+   মোডাল
+   ═══════════════════════════════════════════════ */
+.modal-backdrop{
+  position: fixed; inset: 0;
+  background: rgba(10,31,61,.5);
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn var(--t-fast);
+}
+.modal-backdrop.show{ display: flex; }
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+
+.modal{
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  background: var(--white);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  display: flex; flex-direction: column;
+  animation: slideUp var(--t) both;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+@keyframes slideUp{
+  from{ transform: translateY(100%); }
+  to  { transform: translateY(0); }
+}
+.modal-head{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.modal-head h3{
+  font-size: 16px; font-weight: 700; color: var(--ink);
+}
+.modal-body{
+  padding: 16px 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-foot{
+  padding: 12px 18px 16px;
+  border-top: 1px solid var(--line);
+  display: flex; gap: 10px;
+  flex-shrink: 0;
+}
+.modal-foot .btn{ flex: 1; }
+
+/* ═══════════════════════════════════════════════
+   টোস্ট
+   ═══════════════════════════════════════════════ */
+#toastWrap{
+  position: fixed;
+  top: calc(var(--topbar-h) + 12px);
+  left: 50%; transform: translateX(-50%);
+  z-index: 200;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+  width: calc(100% - 32px);
+  max-width: 380px;
+}
+.toast{
+  padding: 11px 16px;
+  border-radius: var(--r-sm);
+  background: var(--navy);
+  color: var(--white);
+  font-size: 13px; font-weight: 500;
+  box-shadow: var(--sh-lg);
+  animation: toastIn var(--t) both;
+  text-align: center;
+}
+.toast.success{ background: var(--green); }
+.toast.error  { background: var(--red); }
+.toast.warn   { background: var(--amber); }
+@keyframes toastIn{
+  from{ opacity: 0; transform: translateY(-12px); }
+  to  { opacity: 1; transform: translateY(0); }
+}
+.toast.out{ animation: toastOut var(--t-fast) both; }
+@keyframes toastOut{
+  to{ opacity: 0; transform: translateY(-12px); }
+}
+
+/* ═══════════════════════════════════════════════
+   টাইমলাইন
+   ═══════════════════════════════════════════════ */
+.timeline{ padding-left: 20px; position: relative; }
+.timeline::before{
+  content: "";
+  position: absolute;
+  left: 6px; top: 6px; bottom: 6px;
+  width: 2px;
+  background: var(--line2);
+}
+.tl-item{
+  position: relative;
+  padding: 0 0 16px 18px;
+}
+.tl-item::before{
+  content: "";
+  position: absolute;
+  left: -19px; top: 5px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 3px var(--white);
+}
+.tl-date{
+  font-size: 11.5px; color: var(--gold-dark); font-weight: 700;
+  letter-spacing: .3px; margin-bottom: 3px;
+}
+.tl-title{ font-size: 14px; font-weight: 600; color: var(--ink); }
+.tl-sub{ font-size: 12px; color: var(--ink3); margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════
+   ড্র্যাগেবল অডিও রেকর্ডার
+   ═══════════════════════════════════════════════ */
+#recorder{
+  position: fixed;
+  bottom: 90px; right: 16px;
+  z-index: 150;
+  width: 250px;
+  background: linear-gradient(145deg, var(--navy) 0%, var(--navy2) 100%);
+  color: var(--white);
+  border-radius: var(--r);
+  box-shadow: var(--sh-lg), 0 0 0 1px rgba(212,168,67,.25);
+  padding: 12px;
+  display: none;
+  user-select: none;
+  touch-action: none;
+}
+#recorder.show{ display: block; }
+#recorder.minimized{
+  width: auto;
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+}
+#recorder.minimized .rec-body{ display: none; }
+#recorder.minimized .rec-head{ margin: 0; }
+
+.rec-head{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  cursor: grab;
+}
+.rec-head:active{ cursor: grabbing; }
+.rec-title{
+  font-size: 11.5px; font-weight: 600; color: var(--gold);
+  letter-spacing: .4px;
+  display: flex; align-items: center; gap: 6px;
+}
+.rec-dot{
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red);
+  animation: pulse 1s infinite;
+}
+@keyframes pulse{
+  0%,100%{ opacity: 1; transform: scale(1); }
+  50%    { opacity: .5; transform: scale(1.3); }
+}
+.rec-handle{
+  font-size: 12px; color: rgba(255,255,255,.5);
+  letter-spacing: 1px;
+}
+.rec-timer{
+  font-size: 30px; font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+  margin: 4px 0 12px;
+  color: var(--white);
+}
+.rec-timer.paused{ color: var(--gold); }
+.rec-body{ display: block; }
+.rec-controls{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.rec-btn{
+  min-height: 44px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--white);
+  font-size: 12px; font-weight: 600;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2px;
+  transition: background var(--t-fast);
+}
+.rec-btn:active{ background: rgba(255,255,255,.2); }
+.rec-btn .b-ico{ font-size: 16px; line-height: 1; }
+.rec-btn.done{ background: var(--green); border-color: var(--green); }
+.rec-btn.cancel{ background: var(--red); border-color: var(--red); }
+.rec-btn.pause{ background: var(--gold); color: var(--navy); border-color: var(--gold); }
+
+/* ═══════════════════════════════════════════════
+   রিপোর্ট এডিটর
+   ═══════════════════════════════════════════════ */
+.report-section{
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  margin-bottom: 10px;
+  overflow: hidden;
+  box-shadow: var(--sh-sm);
+  transition: box-shadow var(--t-fast), transform var(--t-fast);
+}
+.report-section.dragging{
+  opacity: .5;
+  transform: scale(.98);
+  box-shadow: var(--sh-md);
+}
+.report-section.drop-target{
+  box-shadow: 0 0 0 2px var(--gold);
+}
+.rs-head{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--gold-soft);
+  border-bottom: 1px solid #f0e3c4;
+  cursor: grab;
+}
+.rs-head:active{ cursor: grabbing; }
+.rs-num{
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold);
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+}
+.rs-title{
+  flex: 1;
+  font-size: 13px; font-weight: 700;
+  color: var(--navy);
+}
+.rs-handle{
+  font-size: 15px; color: var(--gold-dark);
+  letter-spacing: 1px;
+}
+.rs-body{
+  padding: 12px 14px;
+  min-height: 70px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink);
+  outline: none;
+}
+.rs-body:empty::before{
+  content: "এখানে লিখুন...";
+  color: var(--ink3);
+  opacity: .6;
+}
+.rs-body:focus{
+  background: #fdfdfb;
+  box-shadow: inset 0 0 0 2px rgba(212,168,67,.25);
+}
+.rs-tools{
+  display: flex;
+  gap: 4px;
+  padding: 6px 8px;
+  border-top: 1px dashed var(--line);
+  background: #fcfcfa;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.rs-tools::-webkit-scrollbar{ display: none; }
+.rs-tool{
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 5px 10px;
+  border-radius: var(--r-xs);
+  background: var(--white);
+  border: 1px solid var(--line);
+  color: var(--ink2);
+  font-size: 11.5px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.rs-tool:active{ background: var(--gold-soft); color: var(--gold-dark); }
+.rs-tool.danger{ color: var(--red); }
+
+/* রিপোর্ট মেটা প্যানেল */
+.report-meta{
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+  color: var(--white);
+  border-radius: var(--r);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.report-meta .rm-row{
+  display: flex; justify-content: space-between;
+  font-size: 12.5px; padding: 4px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.12);
+}
+.report-meta .rm-row:last-child{ border: none; }
+.report-meta .rm-key{ color: var(--gold); font-weight: 600; }
+.report-meta .rm-val{ color: var(--white); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- টপবার -->
+  <header id="topbar">
+    <div class="brand">
+      <div class="eye">👁️</div>
+      <div>
+        <span class="brand-name">Third Eye</span>
+        <span class="brand-sub">by Meghulo</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button id="installBtn" type="button" title="অ্যাপ ইনস্টল করুন">
+      <span>⬇</span><span>ইনস্টল</span>
+    </button>
+    <button class="top-btn" id="searchBtn" type="button" title="সার্চ">🔍</button>
+  </header>
+
+  <!-- অফলাইন ইন্ডিকেটর -->
+  <div id="offlineBar">⚡ আপনি অফলাইনে আছেন — সব ডেটা ফোনে সেভ হবে</div>
+
+  <!-- মূল কনটেন্ট -->
+  <main id="content">
+    <!-- ═══════════ হোম ভিউ ═══════════ -->
+<section class="view active" id="view-home">
+
+  <!-- গ্রিটিং -->
+  <div style="padding:4px 2px 12px;">
+    <h1 style="font-size:20px;font-weight:700;color:var(--ink);line-height:1.3;">
+      স্বাগতম 👁️
+    </h1>
+    <p style="font-size:13px;color:var(--ink3);margin-top:2px;" id="homeGreeting">
+      আজকের অনুসন্ধান শুরু করুন
+    </p>
+  </div>
+
+  <!-- ৪টি স্ট্যাট কার্ড -->
+  <div class="stat-grid">
+    <div class="stat-card" data-goto="cases">
+      <div class="ico navy">📁</div>
+      <div class="info">
+        <div class="num" id="statCases">০</div>
+        <div class="lbl">মোট কেস</div>
+      </div>
+    </div>
+    <div class="stat-card" data-goto="quick">
+      <div class="ico">📝</div>
+      <div class="info">
+        <div class="num" id="statEntries">০</div>
+        <div class="lbl">মোট এন্ট্রি</div>
+      </div>
+    </div>
+    <div class="stat-card" data-goto="media">
+      <div class="ico red">🎬</div>
+      <div class="info">
+        <div class="num" id="statMedia">০</div>
+        <div class="lbl">মিডিয়া</div>
+      </div>
+    </div>
+    <div class="stat-card" data-goto="reports">
+      <div class="ico green">📄</div>
+      <div class="info">
+        <div class="num" id="statReports">০</div>
+        <div class="lbl">রিপোর্ট</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- সাম্প্রতিক কেস -->
+  <div class="section-head">
+    <h2>📁 সাম্প্রতিক কেস</h2>
+    <button class="link" data-goto="cases" type="button">সব কেস দেখুন →</button>
+  </div>
+  <div id="homeRecentCases">
+    <!-- JS populate করবে -->
+  </div>
+
+  <!-- আজকের এন্ট্রি -->
+  <div class="section-head">
+    <h2>📝 আজকের এন্ট্রি</h2>
+    <span class="badge badge-info" id="todayCount">০ টি</span>
+  </div>
+  <div id="homeTodayEntries">
+    <!-- JS populate করবে -->
+  </div>
+
+  <!-- কুইক অ্যাকশন -->
+  <div class="section-head">
+    <h2>⚡ দ্রুত কাজ</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <button class="btn btn-ghost btn-block" data-quick="note" type="button">
+      📝 নতুন নোট
+    </button>
+    <button class="btn btn-ghost btn-block" data-quick="interview" type="button">
+      🎤 সাক্ষাৎকার
+    </button>
+    <button class="btn btn-ghost btn-block" data-quick="photo" type="button">
+      📷 ছবি তুলুন
+    </button>
+    <button class="btn btn-ghost btn-block" data-quick="audio" type="button">
+      🎙️ অডিও রেকর্ড
+    </button>
+  </div>
+
+</section>
+<!-- ═══════════ কেস লিস্ট ভিউ ═══════════ -->
+<section class="view" id="view-cases">
+
+  <div class="section-head" style="margin-top:0;">
+    <h2>📁 সব কেস</h2>
+    <span class="badge badge-info" id="caseListCount">০ টি</span>
+  </div>
+
+  <!-- সার্চ বার -->
+  <div style="position:relative;margin-bottom:10px;">
+    <input
+      type="search"
+      class="input"
+      id="caseSearch"
+      placeholder="🔍 কেসের নাম বা ট্যাগ খুঁজুন..."
+      style="padding-left:38px;"
+      autocomplete="off">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:15px;">🔍</span>
+  </div>
+
+  <!-- স্ট্যাটাস ফিল্টার চিপস -->
+  <div class="chips" id="caseStatusChips">
+    <button class="chip active" data-status="all"       type="button">সব</button>
+    <button class="chip"        data-status="active"    type="button">🟡 চলছে</button>
+    <button class="chip"        data-status="ready"     type="button">🟢 প্রস্তুত</button>
+    <button class="chip"        data-status="published" type="button">🟣 প্রকাশিত</button>
+    <button class="chip"        data-status="archived"  type="button">⚪ স্থগিত</button>
+  </div>
+
+  <!-- সর্ট অপশন -->
+  <div class="row-between" style="margin:6px 0 12px;">
+    <span style="font-size:12px;color:var(--ink3);" id="caseResultInfo">
+      মোট ০ টি কেস
+    </span>
+    <select class="select" id="caseSort" style="width:auto;min-height:36px;padding:6px 32px 6px 12px;font-size:12.5px;">
+      <option value="newest">নতুন আগে</option>
+      <option value="oldest">পুরাতন আগে</option>
+      <option value="name">নাম (ক → ঞ)</option>
+      <option value="updated">সর্বশেষ আপডেট</option>
+    </select>
+  </div>
+
+  <!-- কেস কার্ডের তালিকা -->
+  <div id="caseListContainer">
+    <!-- JS populate করবে -->
+  </div>
+
+</section>
+<!-- ═══════════ কেস ডিটেইল ভিউ ═══════════ -->
+<section class="view" id="view-caseDetail">
+
+  <!-- 🔹 কেস হেডার (ডাইনামিক) -->
+  <div class="card" style="padding:14px;margin-bottom:12px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:var(--white);border:none;">
+    <div class="row" style="align-items:flex-start;gap:8px;margin-bottom:10px;">
+      <button class="icon-btn" id="cdBackBtn" type="button"
+              style="color:var(--white);background:rgba(255,255,255,.12);flex-shrink:0;"
+              aria-label="ফিরে যান">←</button>
+      <div style="flex:1;min-width:0;">
+        <h2 id="cdTitle"
+            style="font-size:17px;font-weight:700;line-height:1.3;color:var(--white);
+                   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+          কেসের নাম
+        </h2>
+        <div class="row" style="gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <span class="badge" id="cdStatus">চলছে</span>
+          <span style="font-size:11.5px;color:rgba(255,255,255,.65);" id="cdDate">—</span>
+        </div>
+      </div>
+      <div class="row" style="gap:2px;">
+        <button class="icon-btn" id="cdEditBtn"   type="button"
+                style="color:var(--white);background:rgba(255,255,255,.12);"
+                aria-label="এডিট">✏️</button>
+        <button class="icon-btn" id="cdMoreBtn"   type="button"
+                style="color:var(--white);background:rgba(255,255,255,.12);"
+                aria-label="আরও">⋯</button>
+      </div>
+    </div>
+
+    <!-- ৪টি সংখ্যা -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.15);">
+      <div style="text-align:center;">
+        <div id="cdCountEntries" style="font-size:17px;font-weight:700;color:var(--gold);">০</div>
+        <div style="font-size:10.5px;color:rgba(255,255,255,.65);">এন্ট্রি</div>
+      </div>
+      <div style="text-align:center;">
+        <div id="cdCountPhotos" style="font-size:17px;font-weight:700;color:var(--gold);">০</div>
+        <div style="font-size:10.5px;color:rgba(255,255,255,.65);">ছবি</div>
+      </div>
+      <div style="text-align:center;">
+        <div id="cdCountAudios" style="font-size:17px;font-weight:700;color:var(--gold);">০</div>
+        <div style="font-size:10.5px;color:rgba(255,255,255,.65);">অডিও</div>
+      </div>
+      <div style="text-align:center;">
+        <div id="cdCountVideos" style="font-size:17px;font-weight:700;color:var(--gold);">০</div>
+        <div style="font-size:10.5px;color:rgba(255,255,255,.65);">ভিডিও</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 ৫টি ট্যাব -->
+  <div class="chips" id="cdTabs" style="padding-bottom:8px;">
+    <button class="chip active" data-cdtab="summary"   type="button">📊 সারসংক্ষেপ</button>
+    <button class="chip"        data-cdtab="entries"   type="button">📝 এন্ট্রি</button>
+    <button class="chip"        data-cdtab="media"     type="button">🎬 মিডিয়া</button>
+    <button class="chip"        data-cdtab="timeline"  type="button">🕐 টাইমলাইন</button>
+    <button class="chip"        data-cdtab="report"    type="button">📄 রিপোর্ট</button>
+  </div>
+
+  <!-- 🔹 ট্যাব কনটেইনার -->
+
+  <!-- ট্যাব ১: সারসংক্ষেপ -->
+  <div class="cd-tab-panel" data-cdpanel="summary">
+    <div class="card">
+      <div class="section-head" style="margin-top:0;">
+        <h2>📋 বিবরণ</h2>
+      </div>
+      <p id="cdDesc" style="font-size:13.5px;color:var(--ink2);line-height:1.6;">
+        কোনো বিবরণ নেই।
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="section-head" style="margin-top:0;">
+        <h2>👥 Entity পরিসংখ্যান</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+        <button class="list-item" data-entgoto="person" type="button" style="margin:0;">
+          <div class="li-ico">👤</div>
+          <div class="li-body">
+            <div class="li-title">ব্যক্তি</div>
+            <div class="li-sub" id="cdEntPerson">০ জন</div>
+          </div>
+        </button>
+        <button class="list-item" data-entgoto="place" type="button" style="margin:0;">
+          <div class="li-ico">📍</div>
+          <div class="li-body">
+            <div class="li-title">স্থান</div>
+            <div class="li-sub" id="cdEntPlace">০ টি</div>
+          </div>
+        </button>
+        <button class="list-item" data-entgoto="org" type="button" style="margin:0;">
+          <div class="li-ico">🏢</div>
+          <div class="li-body">
+            <div class="li-title">প্রতিষ্ঠান</div>
+            <div class="li-sub" id="cdEntOrg">০ টি</div>
+          </div>
+        </button>
+        <button class="list-item" data-entgoto="event" type="button" style="margin:0;">
+          <div class="li-ico">📅</div>
+          <div class="li-body">
+            <div class="li-title">ঘটনা</div>
+            <div class="li-sub" id="cdEntEvent">০ টি</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head" style="margin-top:0;">
+        <h2>📊 এন্ট্রি ধরন</h2>
+      </div>
+      <div id="cdTypeChart">
+        <!-- JS populate করবে -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head" style="margin-top:0;">
+        <h2>📈 শেষ ৭ দিনের কার্যক্রম</h2>
+      </div>
+      <div id="cdActivityChart" style="display:flex;align-items:flex-end;justify-content:space-between;height:100px;gap:6px;padding:6px 2px;">
+        <!-- JS populate করবে -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head" style="margin-top:0;">
+        <h2>✅ কাভারেজ চেকলিস্ট</h2>
+      </div>
+      <div id="cdChecklist">
+        <!-- JS populate করবে -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ট্যাব ২: এন্ট্রি -->
+  <div class="cd-tab-panel hidden" data-cdpanel="entries">
+    <div class="row" style="gap:8px;margin-bottom:10px;">
+      <input type="search" class="input" id="cdEntrySearch"
+             placeholder="🔍 এন্ট্রি খুঁজুন..." autocomplete="off">
+      <button class="icon-btn" id="cdEntryFilterBtn" type="button"
+              style="background:var(--white);border:1px solid var(--line2);flex-shrink:0;"
+              aria-label="ফিল্টার">⚙️</button>
+    </div>
+    <div class="chips" id="cdEntryTypeChips">
+      <button class="chip active" data-etype="all"        type="button">সব</button>
+      <button class="chip"        data-etype="interview"  type="button">🎤 সাক্ষাৎকার</button>
+      <button class="chip"        data-etype="note"       type="button">📝 নোট</button>
+      <button class="chip"        data-etype="event"      type="button">🎯 ঘটনা</button>
+      <button class="chip"        data-etype="document"   type="button">📄 নথি</button>
+      <button class="chip"        data-etype="stat"       type="button">📊 পরিসংখ্যান</button>
+      <button class="chip"        data-etype="quote"      type="button">💬 উদ্ধৃতি</button>
+    </div>
+    <div id="cdEntryList">
+      <!-- JS populate করবে -->
+    </div>
+    <button class="btn btn-gold btn-block mt-12" id="cdAddEntryBtn" type="button">
+      ＋ নতুন এন্ট্রি যোগ করুন
+    </button>
+  </div>
+
+  <!-- ট্যাব ৩: মিডিয়া -->
+  <div class="cd-tab-panel hidden" data-cdpanel="media">
+    <div class="chips" id="cdMediaTypeChips">
+      <button class="chip active" data-mtype="all"    type="button">সব</button>
+      <button class="chip"        data-mtype="photo"  type="button">📷 ছবি</button>
+      <button class="chip"        data-mtype="audio"  type="button">🎙️ অডিও</button>
+      <button class="chip"        data-mtype="video"  type="button">🎥 ভিডিও</button>
+    </div>
+    <div id="cdMediaGrid" class="media-grid">
+      <!-- JS populate করবে -->
+    </div>
+    <div class="row mt-12" style="gap:8px;">
+      <button class="btn btn-ghost grow" data-mediaAdd="photo" type="button">📷 ছবি</button>
+      <button class="btn btn-ghost grow" data-mediaAdd="audio" type="button">🎙️ অডিও</button>
+      <button class="btn btn-ghost grow" data-mediaAdd="video" type="button">🎥 ভিডিও</button>
+    </div>
+  </div>
+
+  <!-- ট্যাব ৪: টাইমলাইন -->
+  <div class="cd-tab-panel hidden" data-cdpanel="timeline">
+    <div id="cdTimeline">
+      <!-- JS populate করবে -->
+    </div>
+  </div>
+
+  <!-- ট্যাব ৫: রিপোর্ট -->
+  <div class="cd-tab-panel hidden" data-cdpanel="report">
+    <div class="card" style="text-align:center;padding:20px 16px;">
+      <div style="font-size:40px;margin-bottom:8px;">📄</div>
+      <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;">
+        রিপোর্ট বিল্ডার
+      </h3>
+      <p style="font-size:12.5px;color:var(--ink3);line-height:1.55;margin-bottom:14px;">
+        উল্টা পিরামিড কাঠামোয় রিপোর্ট তৈরি করুন
+      </p>
+      <div class="row" style="gap:8px;">
+        <button class="btn btn-gold grow" id="cdAutoDraftBtn" type="button">
+          ✨ অটো-ড্রাফট
+        </button>
+        <button class="btn btn-ghost grow" id="cdManualDraftBtn" type="button">
+          ✏️ ম্যানুয়াল
+        </button>
+      </div>
+    </div>
+
+    <div id="cdReportMeta" class="hidden">
+      <!-- JS populate করবে -->
+    </div>
+
+    <div id="cdReportSections">
+      <!-- JS populate করবে -->
+    </div>
+
+    <div class="row mt-12" style="gap:8px;">
+      <button class="btn btn-primary grow hidden" id="cdSaveReportBtn" type="button">
+        💾 সেভ
+      </button>
+      <button class="btn btn-ghost grow hidden" id="cdExportReportBtn" type="button">
+        📤 এক্সপোর্ট
+      </button>
+    </div>
+
+    <div class="row mt-8 hidden" id="cdReportTools" style="gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" data-export="pdf"  type="button">📄 PDF</button>
+      <button class="btn btn-ghost btn-sm" data-export="html" type="button">🌐 HTML</button>
+      <button class="btn btn-ghost btn-sm" data-export="txt"  type="button">📝 TXT</button>
+      <button class="btn btn-ghost btn-sm" data-export="copy" type="button">📋 কপি</button>
+    </div>
+  </div>
+
+</section>
+<!-- ═══════════ দ্রুত ভিউ ═══════════ -->
+<section class="view" id="view-quick">
+
+  <div class="section-head" style="margin-top:0;">
+    <h2>📝 দ্রুত এন্ট্রি</h2>
+  </div>
+
+  <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.55;">
+    কোন ধরনের এন্ট্রি করতে চান বেছে নিন — দ্রুত নোট, সাক্ষাৎকার, ঘটনা, নথি, পরিসংখ্যান বা উদ্ধৃতি।
+  </p>
+
+  <!-- ৬ ধরনের এন্ট্রি টাইপ -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+    <button class="card clickable" data-newentry="interview" type="button"
+            style="text-align:left;padding:14px;margin:0;border:none;">
+      <div style="font-size:24px;margin-bottom:6px;">🎤</div>
+      <div style="font-size:14px;font-weight:700;color:var(--ink);">সাক্ষাৎকার</div>
+      <div style="font-size:11.5px;color:var(--ink3);margin-top:3px;">প্রশ্ন-উত্তর, উদ্ধৃতি</div>
+    </button>
+    <button class="card clickable" data-newentry="note" type="button"
+            style="text-align:left;padding:14px;margin:0;border:none;">
+      <div style="font-size:24px;margin-bottom:6px;">📝</div>
+      <div style="font-size:14px;font-weight:700;color:var(--ink);">নোট</div>
+      <div style="font-size:11.5px;color:var(--ink3);margin-top:3px;">দ্রুত মন্তব্য</div>
+    </button>
+    <button class="card clickable" data-newentry="event" type="button"
+            style="text-align:left;padding:14px;margin:0;border:none;">
+      <div style="font-size:24px;margin-bottom:6px;">🎯</div>
+      <div style="font-size:14px;font-weight:700;color:var(--ink);">ঘটনা</div>
+      <div style="font-size:11.5px;color:var(--ink3);margin-top:3px;">তারিখ, স্থান, বিবরণ</div>
+    </button>
+    <button class="card clickable" data-newentry="document" type="button"
+            style="text-align:left;padding:14px;margin:0;border:none;">
+      <div style="font-size:24px;margin-bottom:6px;">📄</div>
+      <div style="font-size:14px;font-weight:700;color:var(--ink);">নথি</div>
+      <div style="font-size:11.5px;color:var(--ink3);margin-top:3px;">ছবি, সূত্র, যাচাই</div>
+    </button>
+    <button class="card clickable" data-newentry="stat" type="button"
+            style="text-align:left;padding:14px;margin:0;border:none;">
+      <div style="font-size:24px;margin-bottom:6px;">📊</div>
+      <div style="font-size:14px;font-weight:700;color:var(--ink);">পরিসংখ্যান</div>
+      <div style="font-size:11.5px;color:var(--ink3);margin-top:3px;">সংখ্যা, উৎস</div>
+    </button>
+    <button class="card clickable" data-newentry="quote" type="button"
+            style="text-align:left;padding:14px;margin:0;border:none;">
+      <div style="font-size:24px;margin-bottom:6px;">💬</div>
+      <div style="font-size:14px;font-weight:700;color:var(--ink);">উদ্ধৃতি</div>
+      <div style="font-size:11.5px;color:var(--ink3);margin-top:3px;">বাক্য, বক্তা, প্রেক্ষাপট</div>
+    </button>
+  </div>
+
+  <!-- চলমান অডিও রেকর্ডিং সেশন -->
+  <div class="section-head">
+    <h2>🎙️ মিডিয়া দ্রুত</h2>
+  </div>
+  <div class="row" style="gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-ghost grow" data-quickmedia="audio" type="button">🎙️ অডিও</button>
+    <button class="btn btn-ghost grow" data-quickmedia="photo" type="button">📷 ছবি</button>
+    <button class="btn btn-ghost grow" data-quickmedia="video" type="button">🎥 ভিডিও</button>
+  </div>
+
+</section>
+<!-- ═══════════ Entity ম্যানেজার ভিউ ═══════════ -->
+<section class="view" id="view-entities">
+
+  <div class="section-head" style="margin-top:0;">
+    <h2 id="entPageTitle">👥 Entity ম্যানেজার</h2>
+    <button class="icon-btn" id="entCloseBtn" type="button"
+            style="background:var(--white);border:1px solid var(--line2);"
+            aria-label="বন্ধ">✕</button>
+  </div>
+
+  <div id="entCaseName" style="font-size:12.5px;color:var(--ink3);margin:-6px 0 10px;padding-left:2px;">
+    কেস: —
+  </div>
+
+  <!-- ৪টি Entity ট্যাব -->
+  <div class="chips" id="entTabs">
+    <button class="chip active" data-enttab="person" type="button">👤 ব্যক্তি</button>
+    <button class="chip"        data-enttab="place"  type="button">📍 স্থান</button>
+    <button class="chip"        data-enttab="org"    type="button">🏢 প্রতিষ্ঠান</button>
+    <button class="chip"        data-enttab="event"  type="button">📅 ঘটনা</button>
+  </div>
+
+  <!-- সার্চ -->
+  <div style="position:relative;margin:6px 0 12px;">
+    <input type="search" class="input" id="entSearch"
+           placeholder="🔍 নাম দিয়ে খুঁজুন..." autocomplete="off"
+           style="padding-left:38px;">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink3);">🔍</span>
+  </div>
+
+  <!-- তালিকা -->
+  <div id="entListContainer">
+    <!-- JS populate করবে -->
+  </div>
+
+  <button class="btn btn-gold btn-block mt-12" id="entAddBtn" type="button">
+    ＋ নতুন যোগ করুন
+  </button>
+
+</section>
+<!-- ═══════════ মিডিয়া হাব ভিউ ═══════════ -->
+<section class="view" id="view-media">
+
+  <div class="section-head" style="margin-top:0;">
+    <h2>🎬 মিডিয়া হাব</h2>
+    <span class="badge badge-info" id="mediaHubCount">০ টি</span>
+  </div>
+
+  <!-- টাইপ ফিল্টার -->
+  <div class="chips" id="mediaHubType">
+    <button class="chip active" data-mhubtype="all"   type="button">সব</button>
+    <button class="chip"        data-mhubtype="photo" type="button">📷 ছবি</button>
+    <button class="chip"        data-mhubtype="audio" type="button">🎙️ অডিও</button>
+    <button class="chip"        data-mhubtype="video" type="button">🎥 ভিডিও</button>
+  </div>
+
+  <!-- কেস ফিল্টার -->
+  <select class="select mb-12" id="mediaHubCase">
+    <option value="all">সব কেস</option>
+    <!-- JS populate করবে -->
+  </select>
+
+  <!-- গ্রিড -->
+  <div id="mediaHubGrid" class="media-grid">
+    <!-- JS populate করবে -->
+  </div>
+
+  <div class="empty hidden" id="mediaHubEmpty">
+    <div class="em-ico">🎬</div>
+    <div class="em-title">কোনো মিডিয়া নেই</div>
+    <div class="em-sub">ছবি, অডিও বা ভিডিও রেকর্ড করে যোগ করুন</div>
+  </div>
+
+</section>
+<!-- ═══════════ রিপোর্ট হাব ভিউ ═══════════ -->
+<section class="view" id="view-reports">
+
+  <div class="section-head" style="margin-top:0;">
+    <h2>📄 রিপোর্ট</h2>
+    <span class="badge badge-info" id="reportHubCount">০ টি</span>
+  </div>
+
+  <div class="chips" id="reportHubType">
+    <button class="chip active" data-rhubtype="all"    type="button">সব</button>
+    <button class="chip"        data-rhubtype="draft"  type="button">📝 খসড়া</button>
+    <button class="chip"        data-rhubtype="final"  type="button">✅ চূড়ান্ত</button>
+  </div>
+
+  <div id="reportHubList">
+    <!-- JS populate করবে -->
+  </div>
+
+  <div class="empty hidden" id="reportHubEmpty">
+    <div class="em-ico">📄</div>
+    <div class="em-title">কোনো রিপোর্ট নেই</div>
+    <div class="em-sub">যেকোনো কেসের রিপোর্ট ট্যাবে গিয়ে খসড়া তৈরি করুন</div>
+  </div>
+
+</section>
+<!-- ═══════════ আরও ভিউ ═══════════ -->
+<section class="view" id="view-more">
+
+  <div class="section-head" style="margin-top:0;">
+    <h2>⚙️ আরও</h2>
+  </div>
+
+  <!-- অ্যাপ তথ্য -->
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:var(--white);border:none;padding:22px 16px;">
+    <div style="font-size:46px;margin-bottom:6px;">👁️</div>
+    <div style="font-size:18px;font-weight:700;color:var(--white);">Third Eye</div>
+    <div style="font-size:11.5px;color:var(--gold);letter-spacing:.6px;margin-top:2px;">by Meghulo</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:10px;">সংস্করণ ১.০.০ • অফলাইন-ফার্স্ট</div>
+  </div>
+
+  <!-- নিরাপত্তা -->
+  <div class="section-head">
+    <h2>🔒 নিরাপত্তা</h2>
+  </div>
+  <button class="list-item" id="morePinBtn" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">🔐</div>
+    <div class="li-body">
+      <div class="li-title">PIN লক</div>
+      <div class="li-sub" id="morePinStatus">সেট করা হয়নি</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+
+  <!-- ব্যাকআপ -->
+  <div class="section-head">
+    <h2>💾 ব্যাকআপ</h2>
+  </div>
+  <button class="list-item" id="moreBackupBtn" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">📤</div>
+    <div class="li-body">
+      <div class="li-title">সম্পূর্ণ ব্যাকআপ</div>
+      <div class="li-sub">AES-256 এনক্রিপ্টেড JSON</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+  <button class="list-item" id="moreRestoreBtn" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">📥</div>
+    <div class="li-body">
+      <div class="li-title">ব্যাকআপ রিস্টোর</div>
+      <div class="li-sub">JSON ফাইল থেকে মার্জ</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+
+  <!-- এক্সপোর্ট -->
+  <div class="section-head">
+    <h2>📊 এক্সপোর্ট</h2>
+  </div>
+  <button class="list-item" id="moreExportCasesCsv" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">📁</div>
+    <div class="li-body">
+      <div class="li-title">কেস CSV</div>
+      <div class="li-sub">সব কেস এক্সপোর্ট</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+  <button class="list-item" id="moreExportEntriesCsv" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">📝</div>
+    <div class="li-body">
+      <div class="li-title">এন্ট্রি CSV</div>
+      <div class="li-sub">সব এন্ট্রি এক্সপোর্ট</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+  <button class="list-item" id="moreExportJson" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">🔓</div>
+    <div class="li-body">
+      <div class="li-title">সাধারণ JSON (এনক্রিপশন ছাড়া)</div>
+      <div class="li-sub">শুধু ডেটা, মিডিয়া বাদ</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+
+  <!-- অ্যাপ -->
+  <div class="section-head">
+    <h2>📱 অ্যাপ</h2>
+  </div>
+  <button class="list-item" id="moreInstallBtn" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">⬇️</div>
+    <div class="li-body">
+      <div class="li-title">অ্যাপ ইনস্টল করুন</div>
+      <div class="li-sub">হোম স্ক্রিনে যোগ করুন</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+  <button class="list-item" id="moreStorageBtn" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">💽</div>
+    <div class="li-body">
+      <div class="li-title">স্টোরেজ তথ্য</div>
+      <div class="li-sub" id="moreStorageInfo">—</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+
+  <!-- বিপজ্জনক -->
+  <div class="section-head">
+    <h2 style="color:var(--red);">⚠️ বিপজ্জনক</h2>
+  </div>
+  <button class="list-item" id="moreResetBtn" type="button"
+          style="width:100%;text-align:left;border-color:#f4c7c7;">
+    <div class="li-ico" style="background:var(--red-soft);">🗑️</div>
+    <div class="li-body">
+      <div class="li-title" style="color:var(--red);">সব ডেটা মুছুন</div>
+      <div class="li-sub">এই কাজটি ফেরানো যাবে না</div>
+    </div>
+    <div class="li-tail" style="color:var(--red);">›</div>
+  </button>
+
+  <div style="text-align:center;padding:24px 0 8px;color:var(--ink3);font-size:11.5px;">
+    👁️ Third Eye • Made for Truth Seekers
+  </div>
+
+</section>
+
+  </main>
+
+  <!-- বটম ন্যাভিগেশন -->
+  <nav id="bottomNav">
+    <button class="nav-item active" data-view="home" type="button">
+      <span class="ico">🏠</span><span>হোম</span>
+    </button>
+    <button class="nav-item" data-view="cases" type="button">
+      <span class="ico">📁</span><span>কেস</span>
+    </button>
+    <button class="nav-item" data-view="quick" type="button">
+      <span class="ico">📝</span><span>দ্রুত</span>
+    </button>
+    <button class="nav-item" data-view="media" type="button">
+      <span class="ico">🎬</span><span>মিডিয়া</span>
+    </button>
+    <button class="nav-item" data-view="reports" type="button">
+      <span class="ico">📄</span><span>রিপোর্ট</span>
+    </button>
+    <button class="nav-item" data-view="more" type="button">
+      <span class="ico">⚙️</span><span>আরও</span>
+    </button>
+  </nav>
+
+</div>
+<!-- ═══════════ টোস্ট কন্টেইনার ═══════════ -->
+<div id="toastWrap" aria-live="polite"></div>
+
+<!-- ═══════════ জেনেরিক মোডাল ═══════════ -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="genericModal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="modalTitle">শিরোনাম</h3>
+      <button class="icon-btn" id="modalClose" type="button" aria-label="বন্ধ">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- কনটেন্ট JS দেবে -->
+    </div>
+    <div class="modal-foot" id="modalFoot">
+      <button class="btn btn-ghost" id="modalCancel" type="button">বাতিল</button>
+      <button class="btn btn-primary" id="modalOk" type="button">ঠিক আছে</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ কনফার্ম মোডাল ═══════════ -->
+<div class="modal-backdrop" id="confirmBackdrop">
+  <div class="modal" style="max-width:400px;" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="confirmTitle">নিশ্চিত করুন</h3>
+      <button class="icon-btn" id="confirmClose" type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMsg" style="font-size:14px;color:var(--ink2);line-height:1.55;"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="confirmNo" type="button">না</button>
+      <button class="btn btn-danger" id="confirmYes" type="button">হ্যাঁ, নিশ্চিত</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ফ্লোটিং অ্যাকশন বাটন ═══════════ -->
+<button class="fab" id="fabNewEntry" type="button" title="নতুন এন্ট্রি" aria-label="নতুন এন্ট্রি">＋</button>
+<!-- ═══════════ কেস ফর্ম মোডাল ═══════════ -->
+<div class="modal-backdrop" id="caseFormBackdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="caseFormTitle">নতুন কেস</h3>
+      <button class="icon-btn" id="caseFormClose" type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="caseFormId">
+
+      <div class="form-group">
+        <label for="caseFormName">কেসের নাম <span class="req">*</span></label>
+        <input type="text" class="input" id="caseFormName"
+               placeholder="যেমন: সরকারি স্কুলে বেতন বকেয়া" maxlength="120">
+      </div>
+
+      <div class="form-group">
+        <label for="caseFormDesc">সংক্ষিপ্ত বিবরণ</label>
+        <textarea class="textarea" id="caseFormDesc" rows="3"
+                  placeholder="কেস সম্পর্কে ২-৩ লাইনে..." maxlength="500"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="caseFormStatus">স্ট্যাটাস</label>
+          <select class="select" id="caseFormStatus">
+            <option value="active">🟡 চলছে</option>
+            <option value="ready">🟢 প্রস্তুত</option>
+            <option value="published">🟣 প্রকাশিত</option>
+            <option value="archived">⚪ স্থগিত</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="caseFormStart">শুরুর তারিখ</label>
+          <input type="date" class="input" id="caseFormStart">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="caseFormTags">ট্যাগ (কমা দিয়ে আলাদা)</label>
+        <input type="text" class="input" id="caseFormTags"
+               placeholder="যেমন: শিক্ষা, দুর্নীতি, সিলেট" maxlength="200">
+      </div>
+
+      <div class="form-group">
+        <label for="caseFormPassword">পাসওয়ার্ড (ঐচ্ছিক)</label>
+        <input type="password" class="input" id="caseFormPassword"
+               placeholder="কেস লক করতে চাইলে দিন" maxlength="32">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="caseFormCancel" type="button">বাতিল</button>
+      <button class="btn btn-primary" id="caseFormSave" type="button">💾 সেভ</button>
+    </div>
+  </div>
+</div>
+<!-- ═══════════ এন্ট্রি এডিটর মোডাল ═══════════ -->
+<div class="modal-backdrop" id="entryFormBackdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="entryFormTitle">নতুন এন্ট্রি</h3>
+      <button class="icon-btn" id="entryFormClose" type="button">✕</button>
+    </div>
+    <div class="modal-body" id="entryFormBody">
+      <input type="hidden" id="entryFormId">
+      <input type="hidden" id="entryFormCaseId">
+      <input type="hidden" id="entryFormType">
+
+      <!-- ধরন সিলেক্ট (নতুন এন্ট্রি হলে দেখাবে) -->
+      <div class="form-group" id="entryTypeGroup">
+        <label for="entryFormTypeSelect">ধরন</label>
+        <select class="select" id="entryFormTypeSelect">
+          <option value="interview">🎤 সাক্ষাৎকার</option>
+          <option value="note">📝 নোট</option>
+          <option value="event">🎯 ঘটনা</option>
+          <option value="document">📄 নথি</option>
+          <option value="stat">📊 পরিসংখ্যান</option>
+          <option value="quote">💬 উদ্ধৃতি</option>
+        </select>
+      </div>
+
+      <!-- কেস সিলেক্ট (কেস না থাকলে দেখাবে) -->
+      <div class="form-group hidden" id="entryCaseGroup">
+        <label for="entryFormCaseSelect">কেস <span class="req">*</span></label>
+        <select class="select" id="entryFormCaseSelect">
+          <!-- JS populate করবে -->
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="entryFormTitleInput">শিরোনাম <span class="req">*</span></label>
+        <input type="text" class="input" id="entryFormTitleInput"
+               placeholder="সংক্ষিপ্ত শিরোনাম" maxlength="160">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="entryFormDate">তারিখ</label>
+          <input type="date" class="input" id="entryFormDate">
+        </div>
+        <div class="form-group">
+          <label for="entryFormTime">সময়</label>
+          <input type="time" class="input" id="entryFormTime">
+        </div>
+      </div>
+
+      <!-- ডাইনামিক ফিল্ড কন্টেইনার -->
+      <div id="entryDynamicFields">
+        <!-- JS populate করবে -->
+      </div>
+
+      <div class="form-group">
+        <label for="entryFormNotes">টীকা / নোট</label>
+        <textarea class="textarea" id="entryFormNotes" rows="3"
+                  placeholder="অতিরিক্ত কিছু..." maxlength="1000"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="entryFormTags">ট্যাগ</label>
+        <input type="text" class="input" id="entryFormTags"
+               placeholder="কমা দিয়ে আলাদা" maxlength="200">
+      </div>
+
+      <!-- সংযুক্ত মিডিয়া -->
+      <div class="form-group">
+        <label>সংযুক্ত মিডিয়া</label>
+        <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <button class="btn btn-ghost btn-sm" data-entattach="photo" type="button">📷 ছবি</button>
+          <button class="btn btn-ghost btn-sm" data-entattach="audio" type="button">🎙️ অডিও</button>
+          <button class="btn btn-ghost btn-sm" data-entattach="video" type="button">🎥 ভিডিও</button>
+        </div>
+        <div id="entryAttachedMedia" class="media-grid" style="grid-template-columns:repeat(4,1fr);"></div>
+      </div>
+
+      <!-- সংযুক্ত Entity -->
+      <div class="form-group">
+        <label>সংযুক্ত Entity</label>
+        <div id="entryLinkedEntities" class="row" style="flex-wrap:wrap;gap:6px;margin-bottom:8px;"></div>
+        <button class="btn btn-ghost btn-sm" id="entryAddEntityBtn" type="button">
+          ＋ Entity যোগ করুন
+        </button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="entryFormDelete" type="button" style="display:none;">🗑️</button>
+      <button class="btn btn-ghost" id="entryFormCancel" type="button">বাতিল</button>
+      <button class="btn btn-primary" id="entryFormSave" type="button">💾 সেভ</button>
+    </div>
+  </div>
+</div>
+<!-- ═══════════ Entity এডিটর মোডাল ═══════════ -->
+<div class="modal-backdrop" id="entityFormBackdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="entityFormTitle">নতুন Entity</h3>
+      <button class="icon-btn" id="entityFormClose" type="button">✕</button>
+    </div>
+    <div class="modal-body" id="entityFormBody">
+      <input type="hidden" id="entityFormId">
+      <input type="hidden" id="entityFormCaseId">
+      <input type="hidden" id="entityFormType">
+
+      <div class="form-group">
+        <label for="entityFormName">নাম <span class="req">*</span></label>
+        <input type="text" class="input" id="entityFormName"
+               placeholder="নাম লিখুন" maxlength="150">
+      </div>
+
+      <!-- ডাইনামিক ফিল্ড -->
+      <div id="entityDynamicFields"></div>
+
+      <div class="form-group">
+        <label for="entityFormNotes">নোট</label>
+        <textarea class="textarea" id="entityFormNotes" rows="3"
+                  placeholder="অতিরিক্ত তথ্য..." maxlength="1000"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="entityFormDelete" type="button" style="display:none;">🗑️</button>
+      <button class="btn btn-ghost" id="entityFormCancel" type="button">বাতিল</button>
+      <button class="btn btn-primary" id="entityFormSave" type="button">💾 সেভ</button>
+    </div>
+  </div>
+</div>
+<!-- ═══════════ ড্র্যাগেবল ফ্লোটিং অডিও রেকর্ডার ═══════════ -->
+<div id="recorder" role="dialog" aria-label="অডিও রেকর্ডার">
+  <div class="rec-head" id="recDragHandle">
+    <div class="rec-title">
+      <span class="rec-dot" id="recDot"></span>
+      <span id="recTitle">রেকর্ডিং</span>
+    </div>
+    <div class="rec-handle" id="recMinimizeBtn" title="ছোট করুন">▬</div>
+  </div>
+
+  <div class="rec-body">
+    <div class="rec-timer" id="recTimer">০০:০০</div>
+
+    <div class="rec-controls">
+      <button class="rec-btn pause" id="recPauseBtn" type="button">
+        <span class="b-ico" id="recPauseIcon">⏸</span>
+        <span id="recPauseLabel">বিরতি</span>
+      </button>
+      <button class="rec-btn done" id="recDoneBtn" type="button">
+        <span class="b-ico">✔</span>
+        <span>সংরক্ষণ</span>
+      </button>
+      <button class="rec-btn cancel" id="recCancelBtn" type="button">
+        <span class="b-ico">✕</span>
+        <span>বাতিল</span>
+      </button>
+    </div>
+
+    <div style="font-size:10.5px;color:rgba(255,255,255,.5);text-align:center;margin-top:8px;">
+      ☰ হেড ধরে টেনে সরান
+    </div>
+  </div>
+</div>
+<!-- ═══════════ ক্যামেরা মোডাল ═══════════ -->
+<div class="modal-backdrop" id="cameraBackdrop" style="align-items:center;">
+  <div class="modal" style="background:#000;padding:0;overflow:hidden;max-width:640px;">
+    <div class="modal-head" style="background:#000;border-color:#222;padding:10px 14px;">
+      <h3 id="cameraTitle" style="color:var(--white);font-size:14px;">📷 ছবি তুলুন</h3>
+      <button class="icon-btn" id="cameraCloseBtn" type="button"
+              style="color:var(--white);" aria-label="বন্ধ">✕</button>
+    </div>
+    <div style="position:relative;background:#000;aspect-ratio:3/4;max-height:70vh;">
+      <video id="cameraVideo" autoplay playsinline muted
+             style="width:100%;height:100%;object-fit:cover;"></video>
+      <canvas id="cameraCanvas" style="display:none;"></canvas>
+
+      <!-- টাইমার (ভিডিওর জন্য) -->
+      <div id="cameraTimer"
+           style="position:absolute;top:10px;left:10px;padding:5px 10px;
+                  background:rgba(192,42,42,.85);color:#fff;border-radius:6px;
+                  font-size:13px;font-weight:700;display:none;">
+        ● ০০:০০
+      </div>
+
+      <!-- ফ্লিপ বাটন -->
+      <button id="cameraFlipBtn" type="button"
+              style="position:absolute;top:10px;right:10px;width:42px;height:42px;
+                     border-radius:50%;background:rgba(0,0,0,.55);color:#fff;
+                     font-size:18px;display:grid;place-items:center;"
+              aria-label="ক্যামেরা বদলান">🔄</button>
+    </div>
+    <div style="padding:14px;background:#000;display:flex;justify-content:center;gap:16px;align-items:center;">
+      <button class="btn btn-ghost" id="cameraCancelBtn" type="button"
+              style="color:#fff;border-color:#444;">বাতিল</button>
+      <button id="cameraCaptureBtn" type="button"
+              style="width:72px;height:72px;border-radius:50%;
+                     background:#fff;border:5px solid rgba(255,255,255,.35);
+                     box-shadow:0 0 0 2px #fff inset;"
+              aria-label="ছবি তুলুন / রেকর্ড শুরু"></button>
+      <button class="btn btn-ghost hidden" id="cameraStopBtn" type="button"
+              style="color:#fff;border-color:#c02a2a;background:#c02a2a;">⬛ স্টপ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ মিডিয়া ভিউয়ার মোডাল ═══════════ -->
+<div class="modal-backdrop" id="mediaViewerBackdrop" style="align-items:center;">
+  <div class="modal" style="background:#0d1421;padding:0;overflow:hidden;max-width:680px;">
+    <div class="modal-head" style="background:#0d1421;border-color:#1e2a3e;padding:10px 14px;">
+      <h3 id="mediaViewerTitle" style="color:var(--white);font-size:14px;">মিডিয়া</h3>
+      <div class="row" style="gap:4px;">
+        <button class="icon-btn" id="mediaViewerDownload" type="button"
+                style="color:var(--white);" aria-label="ডাউনলোড">⬇️</button>
+        <button class="icon-btn" id="mediaViewerDelete" type="button"
+                style="color:#ff7a7a;" aria-label="মুছুন">🗑️</button>
+        <button class="icon-btn" id="mediaViewerClose" type="button"
+                style="color:var(--white);" aria-label="বন্ধ">✕</button>
+      </div>
+    </div>
+    <div id="mediaViewerBody"
+         style="background:#000;max-height:70vh;overflow:auto;padding:0;display:grid;place-items:center;">
+      <!-- JS populate করবে -->
+    </div>
+    <div class="modal-foot" style="background:#0d1421;border-color:#1e2a3e;">
+      <input type="text" class="input" id="mediaViewerCaption"
+             placeholder="ক্যাপশন লিখুন..."
+             style="background:#1a2436;color:#fff;border-color:#2a3a54;">
+      <button class="btn btn-gold" id="mediaViewerSaveCaption" type="button">💾</button>
+    </div>
+  </div>
+</div>
+<!-- ═══════════ Entity পিকার মোডাল ═══════════ -->
+<div class="modal-backdrop" id="entityPickerBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" style="max-height:75vh;">
+    <div class="modal-head">
+      <h3>Entity নির্বাচন করুন</h3>
+      <button class="icon-btn" id="entityPickerClose" type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="chips" id="entityPickerTabs">
+        <button class="chip active" data-eptab="person" type="button">👤 ব্যক্তি</button>
+        <button class="chip"        data-eptab="place"  type="button">📍 স্থান</button>
+        <button class="chip"        data-eptab="org"    type="button">🏢 প্রতিষ্ঠান</button>
+        <button class="chip"        data-eptab="event"  type="button">📅 ঘটনা</button>
+      </div>
+      <input type="search" class="input" id="entityPickerSearch"
+             placeholder="🔍 খুঁজুন..." autocomplete="off" style="margin-bottom:10px;">
+      <div id="entityPickerList" style="max-height:40vh;overflow-y:auto;">
+        <!-- JS populate করবে -->
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="entityPickerCancel" type="button">বন্ধ</button>
+      <button class="btn btn-gold" id="entityPickerNewBtn" type="button">＋ নতুন</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- বাকি স্ক্রিপ্ট অংশ ৭-১২ এ যোগ হবে -->
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — মূল স্ক্রিপ্ট
+   ═══════════════════════════════════════════════ */
+
+'use strict';
+
+/* ───────────── DOM হেল্পার ───────────── */
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+/* ───────────── ইউনিক আইডি ───────────── */
+function uid(prefix = 'id') {
+  const t = Date.now().toString(36);
+  const r = Math.random().toString(36).slice(2, 8);
+  return `${prefix}_${t}${r}`;
+}
+
+/* ───────────── HTML escape ───────────── */
+function esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ───────────── বাংলা সংখ্যা ───────────── */
+const BN_DIGITS = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+function bnNum(n) {
+  if (n == null || isNaN(n)) return '০';
+  return String(n).replace(/\d/g, d => BN_DIGITS[+d]);
+}
+
+/* ───────────── বাংলা মাসের নাম ───────────── */
+const BN_MONTHS = [
+  'জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন',
+  'জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'
+];
+const BN_DAYS = ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];
+
+/* বাংলা তারিখ: ১৫ জানুয়ারি ২০২৬ */
+function formatDate(dateInput) {
+  if (!dateInput) return '—';
+  const d = (dateInput instanceof Date) ? dateInput : new Date(dateInput);
+  if (isNaN(d.getTime())) return '—';
+  return `${bnNum(d.getDate())} ${BN_MONTHS[d.getMonth()]} ${bnNum(d.getFullYear())}`;
+}
+
+/* বাংলা সময়: ১৪:৩০ */
+function formatTime(dateInput) {
+  if (!dateInput) return '';
+  const d = (dateInput instanceof Date) ? dateInput : new Date(dateInput);
+  if (isNaN(d.getTime())) return '';
+  return `${bnNum(String(d.getHours()).padStart(2,'0'))}:${bnNum(String(d.getMinutes()).padStart(2,'0'))}`;
+}
+
+/* আপেক্ষিক সময়: "২ ঘণ্টা আগে" */
+function relTime(ts) {
+  if (!ts) return '';
+  const sec = Math.floor((Date.now() - ts) / 1000);
+  if (sec < 60) return 'এইমাত্র';
+  if (sec < 3600) return `${bnNum(Math.floor(sec / 60))} মিনিট আগে`;
+  if (sec < 86400) return `${bnNum(Math.floor(sec / 3600))} ঘণ্টা আগে`;
+  if (sec < 604800) return `${bnNum(Math.floor(sec / 86400))} দিন আগে`;
+  return formatDate(ts);
+}
+
+/* YYYY-MM-DD → input[type=date] মানের জন্য */
+function toDateInput(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return '';
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
+}
+function toTimeInput(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return '';
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+/* ───────────── টোস্ট নোটিফিকেশন ───────────── */
+function toast(msg, type = '', ms = 2200) {
+  const wrap = $('#toastWrap');
+  if (!wrap) return;
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 220);
+  }, ms);
+}
+
+/* ───────────── কনফার্ম ডায়ালগ ───────────── */
+function confirmDialog(title, msg) {
+  return new Promise(resolve => {
+    const back = $('#confirmBackdrop');
+    $('#confirmTitle').textContent = title || 'নিশ্চিত করুন';
+    $('#confirmMsg').textContent = msg || '';
+
+    const cleanup = (val) => {
+      back.classList.remove('show');
+      $('#confirmYes').removeEventListener('click', onYes);
+      $('#confirmNo').removeEventListener('click', onNo);
+      $('#confirmClose').removeEventListener('click', onNo);
+      back.removeEventListener('click', onBack);
+      resolve(val);
+    };
+    const onYes = () => cleanup(true);
+    const onNo  = () => cleanup(false);
+    const onBack = (e) => { if (e.target === back) cleanup(false); };
+
+    $('#confirmYes').addEventListener('click', onYes);
+    $('#confirmNo').addEventListener('click', onNo);
+    $('#confirmClose').addEventListener('click', onNo);
+    back.addEventListener('click', onBack);
+
+    back.classList.add('show');
+  });
+}
+
+/* ───────────── জেনেরিক মোডাল ───────────── */
+function openModal({ title, bodyHTML, okText, cancelText, onOk }) {
+  const back = $('#modalBackdrop');
+  $('#modalTitle').textContent = title || 'তথ্য';
+  $('#modalBody').innerHTML = bodyHTML || '';
+  $('#modalOk').textContent = okText || 'ঠিক আছে';
+  $('#modalCancel').textContent = cancelText || 'বাতিল';
+
+  const close = () => {
+    back.classList.remove('show');
+    $('#modalOk').removeEventListener('click', okFn);
+    $('#modalCancel').removeEventListener('click', closeFn);
+    $('#modalClose').removeEventListener('click', closeFn);
+    back.removeEventListener('click', backFn);
+  };
+  const okFn = () => {
+    if (typeof onOk === 'function' && onOk() === false) return;
+    close();
+  };
+  const closeFn = () => close();
+  const backFn = (e) => { if (e.target === back) close(); };
+
+  $('#modalOk').addEventListener('click', okFn);
+  $('#modalCancel').addEventListener('click', closeFn);
+  $('#modalClose').addEventListener('click', closeFn);
+  back.addEventListener('click', backFn);
+
+  back.classList.add('show');
+}
+
+/* ═══════════════════════════════════════════════
+   IndexedDB — thirdeye_v1
+   ═══════════════════════════════════════════════ */
+const DB_NAME = 'thirdeye_v1';
+const DB_VERSION = 1;
+
+const STORES = {
+  cases:    { keyPath: 'id', indexes: ['status', 'createdAt', 'updatedAt'] },
+  entries:  { keyPath: 'id', indexes: ['caseId', 'type', 'date', 'createdAt'] },
+  entities: { keyPath: 'id', indexes: ['caseId', 'type', 'name', 'createdAt'] },
+  media:    { keyPath: 'id', indexes: ['caseId', 'type', 'date', 'createdAt'] },
+  reports:  { keyPath: 'id', indexes: ['caseId', 'status', 'updatedAt'] },
+  settings: { keyPath: 'key' }
+};
+
+const DB = {
+  _db: null,
+
+  /* ডেটাবেস খুলুন */
+  async open() {
+    if (this._db) return this._db;
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+
+        Object.keys(STORES).forEach(name => {
+          if (db.objectStoreNames.contains(name)) return;
+          const cfg = STORES[name];
+          const store = db.createObjectStore(name, { keyPath: cfg.keyPath });
+          (cfg.indexes || []).forEach(idx => {
+            try { store.createIndex(idx, idx, { unique: false }); }
+            catch (_) {}
+          });
+        });
+      };
+
+      req.onsuccess = () => {
+        this._db = req.result;
+        this._db.onerror = (ev) => console.error('DB error:', ev);
+        resolve(this._db);
+      };
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  /* ট্রানজেকশন হেল্পার */
+  async _tx(storeName, mode = 'readonly') {
+    const db = await this.open();
+    return db.transaction(storeName, mode).objectStore(storeName);
+  },
+
+  /* একটি রেকর্ড পড়ুন */
+  async get(storeName, id) {
+    const store = await this._tx(storeName);
+    return new Promise((resolve, reject) => {
+      const req = store.get(id);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  /* সব রেকর্ড পড়ুন */
+  async getAll(storeName) {
+    const store = await this._tx(storeName);
+    return new Promise((resolve, reject) => {
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  /* ইনডেক্স দিয়ে পড়ুন */
+  async getByIndex(storeName, indexName, value) {
+    const store = await this._tx(storeName);
+    return new Promise((resolve, reject) => {
+      const idx = store.index(indexName);
+      const req = idx.getAll(value);
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  /* একটি রেকর্ড সেভ (insert/update) */
+  async put(storeName, data) {
+    const store = await this._tx(storeName, 'readwrite');
+    return new Promise((resolve, reject) => {
+      const req = store.put(data);
+      req.onsuccess = () => resolve(data);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  /* অনেক রেকর্ড একসাথে সেভ */
+  async putMany(storeName, arr) {
+    if (!arr || !arr.length) return;
+    const db = await this.open();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      arr.forEach(item => store.put(item));
+      tx.oncomplete = () => resolve(arr.length);
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+
+  /* একটি রেকর্ড মুছুন */
+  async delete(storeName, id) {
+    const store = await this._tx(storeName, 'readwrite');
+    return new Promise((resolve, reject) => {
+      const req = store.delete(id);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  /* ইনডেক্স মিলিয়ে সব মুছুন */
+  async deleteByIndex(storeName, indexName, value) {
+    const items = await this.getByIndex(storeName, indexName, value);
+    const db = await this.open();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      items.forEach(it => store.delete(it.id));
+      tx.oncomplete = () => resolve(items.length);
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+
+  /* স্টোর সম্পূর্ণ খালি */
+  async clear(storeName) {
+    const store = await this._tx(storeName, 'readwrite');
+    return new Promise((resolve, reject) => {
+      const req = store.clear();
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  /* সব স্টোর খালি (রিসেট) */
+  async clearAll() {
+    for (const name of Object.keys(STORES)) {
+      await this.clear(name);
+    }
+  },
+
+  /* ═══ সেটিংস (key-value) ═══ */
+  async getSetting(key, def = null) {
+    const row = await this.get('settings', key);
+    return row ? row.value : def;
+  },
+  async setSetting(key, value) {
+    return this.put('settings', { key, value, updatedAt: Date.now() });
+  },
+  async delSetting(key) {
+    return this.delete('settings', key);
+  },
+
+  /* ═══ স্টোরেজ পরিসংখ্যান ═══ */
+  async stats() {
+    const stats = {};
+    for (const name of Object.keys(STORES)) {
+      const all = await this.getAll(name);
+      stats[name] = all.length;
+    }
+    return stats;
+  },
+
+  /* ═══ সব ডেটা (ব্যাকআপের জন্য) ═══ */
+  async exportAll() {
+    const out = { version: DB_VERSION, exportedAt: Date.now(), data: {} };
+    for (const name of Object.keys(STORES)) {
+      out.data[name] = await this.getAll(name);
+    }
+    return out;
+  },
+
+  /* ═══ মার্জ ইমপোর্ট (ডুপ্লিকেট বাদ) ═══ */
+  async importMerge(backup) {
+    if (!backup || !backup.data) throw new Error('অবৈধ ব্যাকআপ ফাইল');
+    const result = { added: 0, skipped: 0 };
+    for (const name of Object.keys(STORES)) {
+      const items = backup.data[name] || [];
+      for (const item of items) {
+        const key = STORES[name].keyPath;
+        const existing = await this.get(name, item[key]);
+        if (existing) { result.skipped++; continue; }
+        await this.put(name, item);
+        result.added++;
+      }
+    }
+    return result;
+  }
+};
+
+/* ═══════════════════════════════════════════════
+   গ্লোবাল State
+   ═══════════════════════════════════════════════ */
+const State = {
+  view: 'home',            // বর্তমান ভিউ
+  caseId: null,            // বর্তমান কেস id
+  caseTab: 'summary',      // কেস ডিটেইল ট্যাব
+  caseData: null,          // বর্তমান কেস অবজেক্ট
+
+  caseFilter: 'all',       // কেস লিস্ট স্ট্যাটাস ফিল্টার
+  caseSort: 'newest',
+  caseQuery: '',
+
+  entryFilterType: 'all',
+  entryQuery: '',
+
+  mediaHubFilter: 'all',
+  mediaHubCase: 'all',
+
+  reportHubFilter: 'all',
+
+  entities: [],            // বর্তমান কেসের entity ক্যাশ
+  editingEntryId: null,
+  editingEntityId: null,
+  editingEntityType: 'person',
+  currentMediaList: [],
+  currentReport: null,
+
+  deferredPrompt: null,    // PWA ইনস্টল প্রম্পট
+  pinHash: null,
+  unlocked: false
+};
+
+/* ═══════════════════════════════════════════════
+   কনস্ট্যান্ট ম্যাপ
+   ═══════════════════════════════════════════════ */
+const ENTRY_TYPES = {
+  interview: { icon: '🎤', label: 'সাক্ষাৎকার', color: 'navy' },
+  note:      { icon: '📝', label: 'নোট',         color: 'amber' },
+  event:     { icon: '🎯', label: 'ঘটনা',        color: 'red' },
+  document:  { icon: '📄', label: 'নথি',         color: 'green' },
+  stat:      { icon: '📊', label: 'পরিসংখ্যান',  color: 'purple' },
+  quote:     { icon: '💬', label: 'উদ্ধৃতি',     color: 'gold' }
+};
+
+const ENTITY_TYPES = {
+  person: { icon: '👤', label: 'ব্যক্তি' },
+  place:  { icon: '📍', label: 'স্থান' },
+  org:    { icon: '🏢', label: 'প্রতিষ্ঠান' },
+  event:  { icon: '📅', label: 'ঘটনা' }
+};
+
+const CASE_STATUS = {
+  active:    { label: 'চলছে',    badge: 'badge-active' },
+  ready:     { label: 'প্রস্তুত', badge: 'badge-ready' },
+  published: { label: 'প্রকাশিত', badge: 'badge-published' },
+  archived:  { label: 'স্থগিত',  badge: 'badge-archived' }
+};
+
+const MEDIA_TYPES = {
+  photo: { icon: '📷', label: 'ছবি' },
+  audio: { icon: '🎙️', label: 'অডিও' },
+  video: { icon: '🎥', label: 'ভিডিও' }
+};
+
+/* ═══════════════════════════════════════════════
+   রিপোর্ট সেকশনের ডিফল্ট নাম
+   ═══════════════════════════════════════════════ */
+const REPORT_SECTIONS = [
+  { key: 'headline',   title: '১. হেডলাইন' },
+  { key: 'lead',       title: '২. লিড' },
+  { key: 'scene',      title: '৩. নাটকীয় দৃশ্য' },
+  { key: 'facts',      title: '৪. মূল তথ্য + সংখ্যা' },
+  { key: 'quotes',     title: '৫. সাক্ষাৎকারের উদ্ধৃতি' },
+  { key: 'story',      title: '৬. মানবিক গল্প' },
+  { key: 'response',   title: '৭. পক্ষের বক্তব্য' },
+  { key: 'context',    title: '৮. প্রেক্ষাপট' },
+  { key: 'recommend',  title: '৯. সুপারিশ' },
+  { key: 'conclusion', title: '১০. উপসংহার' }
+];
+</script>
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — ন্যাভিগেশন, হোম, কেস
+   ═══════════════════════════════════════════════ */
+
+/* ───────────── ন্যাভিগেশন ───────────── */
+function navigateTo(viewName) {
+  // সব view লুকান
+  $$('.view').forEach(v => v.classList.remove('active'));
+
+  // নির্দিষ্ট view দেখান
+  const target = $(`#view-${viewName}`);
+  if (target) target.classList.add('active');
+  else {
+    $('#view-home').classList.add('active');
+    viewName = 'home';
+  }
+
+  State.view = viewName;
+
+  // বটম নেভ আপডেট
+  $$('#bottomNav .nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === viewName);
+  });
+
+  // স্ক্রল উপরে
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  // FAB শুধু হোম/কেস লিস্টে দেখান
+  const fab = $('#fabNewEntry');
+  if (fab) {
+    fab.classList.toggle('hidden', !['home', 'cases', 'quick'].includes(viewName));
+  }
+
+  // ভিউ-নির্দিষ্ট রেন্ডার
+  if (viewName === 'home')      renderHome();
+  if (viewName === 'cases')     renderCaseList();
+  if (viewName === 'media')     renderMediaHub();
+  if (viewName === 'reports')   renderReportHub();
+  if (viewName === 'more')      renderMore();
+}
+
+/* ───────────── হোম ড্যাশবোর্ড ───────────── */
+async function renderHome() {
+  try {
+    const [cases, entries, media, reports] = await Promise.all([
+      DB.getAll('cases'),
+      DB.getAll('entries'),
+      DB.getAll('media'),
+      DB.getAll('reports')
+    ]);
+
+    // গ্রিটিং সময় অনুযায়ী
+    const h = new Date().getHours();
+    const greet = h < 12 ? 'শুভ সকাল' : h < 17 ? 'শুভ অপরাহ্ন' : h < 20 ? 'শুভ সন্ধ্যা' : 'শুভ রাত্রি';
+    const gEl = $('#homeGreeting');
+    if (gEl) gEl.textContent = `${greet} — আজকের অনুসন্ধান শুরু করুন`;
+
+    // স্ট্যাট কার্ড
+    $('#statCases').textContent   = bnNum(cases.length);
+    $('#statEntries').textContent = bnNum(entries.length);
+    $('#statMedia').textContent   = bnNum(media.length);
+    $('#statReports').textContent = bnNum(reports.length);
+
+    // সাম্প্রতিক কেস (সর্বোচ্চ ৫টি)
+    renderRecentCases(cases);
+
+    // আজকের এন্ট্রি
+    renderTodayEntries(entries);
+
+  } catch (err) {
+    console.error('renderHome:', err);
+    toast('হোম লোডে সমস্যা', 'error');
+  }
+}
+
+/* সাম্প্রতিক কেস রেন্ডার */
+function renderRecentCases(cases) {
+  const wrap = $('#homeRecentCases');
+  if (!wrap) return;
+
+  if (!cases.length) {
+    wrap.innerHTML = `
+      <div class="empty">
+        <div class="em-ico">📁</div>
+        <div class="em-title">এখনো কোনো কেস নেই</div>
+        <div class="em-sub">নতুন কেস দিয়ে শুরু করুন</div>
+      </div>`;
+    return;
+  }
+
+  const recent = [...cases]
+    .sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0))
+    .slice(0, 5);
+
+  wrap.innerHTML = recent.map(c => {
+    const st = CASE_STATUS[c.status] || CASE_STATUS.active;
+    const entryCount = (c._entryCount != null) ? c._entryCount : '';
+    return `
+      <div class="case-card" data-open-case="${esc(c.id)}">
+        <div class="cc-head">
+          <div class="cc-title">${esc(c.title || 'শিরোনামহীন')}</div>
+          <span class="badge ${st.badge}">${st.label}</span>
+        </div>
+        ${c.description ? `<div class="cc-desc">${esc(c.description)}</div>` : ''}
+        <div class="cc-meta">
+          <span>📝 ${bnNum(c._entryCount || 0)}</span>
+          <span>🕐 ${relTime(c.updatedAt || c.createdAt)}</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* আজকের এন্ট্রি রেন্ডার */
+async function renderTodayEntries(entries) {
+  const wrap = $('#homeTodayEntries');
+  const cntEl = $('#todayCount');
+  if (!wrap) return;
+
+  const todayStr = toDateInput(Date.now());
+  const todayEntries = entries.filter(e => {
+    const d = e.date || e.createdAt;
+    return toDateInput(d) === todayStr;
+  });
+
+  if (cntEl) cntEl.textContent = `${bnNum(todayEntries.length)} টি`;
+
+  if (!todayEntries.length) {
+    wrap.innerHTML = `
+      <div class="empty" style="padding:24px 16px;">
+        <div class="em-ico" style="font-size:32px;">📭</div>
+        <div class="em-sub">আজ এখনো কোনো এন্ট্রি নেই</div>
+      </div>`;
+    return;
+  }
+
+  // কেস নামের ম্যাপ
+  const cases = await DB.getAll('cases');
+  const caseMap = {};
+  cases.forEach(c => caseMap[c.id] = c.title);
+
+  wrap.innerHTML = todayEntries
+    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+    .slice(0, 5)
+    .map(e => {
+      const info = ENTRY_TYPES[e.type] || ENTRY_TYPES.note;
+      const caseName = caseMap[e.caseId] || 'কেস নেই';
+      return `
+        <div class="list-item" data-open-entry="${esc(e.id)}" data-entry-case="${esc(e.caseId || '')}">
+          <div class="li-ico">${info.icon}</div>
+          <div class="li-body">
+            <div class="li-title">${esc(e.title || info.label)}</div>
+            <div class="li-sub">${info.label} • ${esc(caseName)} • ${relTime(e.createdAt)}</div>
+          </div>
+          <div class="li-tail">›</div>
+        </div>`;
+    }).join('');
+}
+
+/* ───────────── কেস লিস্ট ───────────── */
+async function renderCaseList() {
+  const wrap = $('#caseListContainer');
+  if (!wrap) return;
+
+  try {
+    const cases = await DB.getAll('cases');
+    const entries = await DB.getAll('entries');
+    const media = await DB.getAll('media');
+
+    // এন্ট্রি/মিডিয়া কাউন্ট ম্যাপ
+    const entryCount = {};
+    entries.forEach(e => { entryCount[e.caseId] = (entryCount[e.caseId] || 0) + 1; });
+    const mediaCount = {};
+    media.forEach(m => { mediaCount[m.caseId] = (mediaCount[m.caseId] || 0) + 1; });
+
+    // enrich
+    cases.forEach(c => {
+      c._entryCount = entryCount[c.id] || 0;
+      c._mediaCount = mediaCount[c.id] || 0;
+    });
+
+    // ফিল্টার
+    let filtered = cases.filter(c => {
+      if (State.caseFilter !== 'all' && c.status !== State.caseFilter) return false;
+      if (State.caseQuery) {
+        const q = State.caseQuery.toLowerCase();
+        const hay = (c.title + ' ' + (c.description || '') + ' ' + (c.tags || []).join(' ')).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    // সর্ট
+    const sort = State.caseSort;
+    filtered.sort((a, b) => {
+      if (sort === 'newest') return (b.createdAt || 0) - (a.createdAt || 0);
+      if (sort === 'oldest') return (a.createdAt || 0) - (b.createdAt || 0);
+      if (sort === 'updated') return (b.updatedAt || 0) - (a.updatedAt || 0);
+      if (sort === 'name') return (a.title || '').localeCompare(b.title || '', 'bn');
+      return 0;
+    });
+
+    // হেড কাউন্ট
+    const listCnt = $('#caseListCount');
+    if (listCnt) listCnt.textContent = `${bnNum(filtered.length)} টি`;
+    const info = $('#caseResultInfo');
+    if (info) info.textContent = `দেখানো হচ্ছে ${bnNum(filtered.length)} / ${bnNum(cases.length)} টি কেস`;
+
+    // খালি অবস্থা
+    if (!filtered.length) {
+      wrap.innerHTML = `
+        <div class="empty">
+          <div class="em-ico">📁</div>
+          <div class="em-title">${cases.length ? 'ফিল্টার মিলে কিছু নেই' : 'কোনো কেস নেই'}</div>
+          <div class="em-sub">${cases.length ? 'ফিল্টার পরিবর্তন করুন' : '➕ বাটনে চাপ দিয়ে নতুন কেস বানান'}</div>
+        </div>`;
+      return;
+    }
+
+    // কেস কার্ড রেন্ডার
+    wrap.innerHTML = filtered.map(c => caseCardHTML(c)).join('');
+
+  } catch (err) {
+    console.error('renderCaseList:', err);
+    wrap.innerHTML = '<div class="empty"><div class="em-title">লোড সমস্যা</div></div>';
+  }
+}
+
+/* কেস কার্ড HTML */
+function caseCardHTML(c) {
+  const st = CASE_STATUS[c.status] || CASE_STATUS.active;
+  const tags = (c.tags || []).slice(0, 3);
+  const locked = c.password ? '<span title="লক করা">🔒</span> ' : '';
+
+  return `
+    <div class="case-card" data-open-case="${esc(c.id)}">
+      <div class="cc-head">
+        <div class="cc-title">${locked}${esc(c.title || 'শিরোনামহীন')}</div>
+        <span class="badge ${st.badge}">${st.label}</span>
+      </div>
+      ${c.description ? `<div class="cc-desc">${esc(c.description)}</div>` : ''}
+      ${tags.length ? `
+        <div class="row" style="flex-wrap:wrap;gap:4px;margin-bottom:8px;">
+          ${tags.map(t => `<span class="badge badge-gold">${esc(t)}</span>`).join('')}
+        </div>` : ''}
+      <div class="cc-meta">
+        <span>📝 ${bnNum(c._entryCount || 0)}</span>
+        <span>🎬 ${bnNum(c._mediaCount || 0)}</span>
+        <span>🕐 ${relTime(c.updatedAt || c.createdAt)}</span>
+      </div>
+    </div>`;
+}
+
+/* ───────────── কেস ডিটেইল খোলা ───────────── */
+async function openCase(caseId) {
+  try {
+    const c = await DB.get('cases', caseId);
+    if (!c) { toast('কেস পাওয়া যায়নি', 'error'); return; }
+
+    State.caseId = caseId;
+    State.caseData = c;
+    State.caseTab = 'summary';
+
+    // হেডার পূরণ
+    $('#cdTitle').textContent = c.title || 'শিরোনামহীন';
+    const st = CASE_STATUS[c.status] || CASE_STATUS.active;
+    const stEl = $('#cdStatus');
+    stEl.textContent = st.label;
+    stEl.className = 'badge ' + st.badge;
+    $('#cdDate').textContent = c.startDate
+      ? formatDate(c.startDate)
+      : formatDate(c.createdAt);
+
+    // ট্যাব রিসেট
+    $$('#cdTabs .chip').forEach(ch => ch.classList.toggle('active', ch.dataset.cdtab === 'summary'));
+    $$('.cd-tab-panel').forEach(p => p.classList.toggle('hidden', p.dataset.cdpanel !== 'summary'));
+
+    // ডিটেইল আপডেট
+    await refreshCaseDetail();
+
+    navigateTo('caseDetail');
+
+  } catch (err) {
+    console.error('openCase:', err);
+    toast('কেস খুলতে সমস্যা', 'error');
+  }
+}
+
+/* কেস ডিটেইল রিফ্রেশ (কাউন্ট + ডিফল্ট ট্যাব) */
+async function refreshCaseDetail() {
+  if (!State.caseId) return;
+  const cid = State.caseId;
+
+  const [entries, media, entities] = await Promise.all([
+    DB.getByIndex('entries', 'caseId', cid),
+    DB.getByIndex('media', 'caseId', cid),
+    DB.getByIndex('entities', 'caseId', cid)
+  ]);
+
+  const photos = media.filter(m => m.type === 'photo').length;
+  const audios = media.filter(m => m.type === 'audio').length;
+  const videos = media.filter(m => m.type === 'video').length;
+
+  $('#cdCountEntries').textContent = bnNum(entries.length);
+  $('#cdCountPhotos').textContent  = bnNum(photos);
+  $('#cdCountAudios').textContent  = bnNum(audios);
+  $('#cdCountVideos').textContent  = bnNum(videos);
+
+  $('#cdDesc').textContent = State.caseData.description || 'কোনো বিবরণ নেই।';
+
+  // Entity কাউন্ট
+  const ep = entities.filter(e => e.type === 'person').length;
+  const el = entities.filter(e => e.type === 'place').length;
+  const eo = entities.filter(e => e.type === 'org').length;
+  const ee = entities.filter(e => e.type === 'event').length;
+  $('#cdEntPerson').textContent = `${bnNum(ep)} জন`;
+  $('#cdEntPlace').textContent  = `${bnNum(el)} টি`;
+  $('#cdEntOrg').textContent    = `${bnNum(eo)} টি`;
+  $('#cdEntEvent').textContent  = `${bnNum(ee)} টি`;
+
+  // সারসংক্ষেপ চার্ট
+  renderTypeChart(entries);
+  renderActivityChart(entries);
+  renderCoverageChecklist(State.caseData, entries, media);
+}
+
+/* এন্ট্রি ধরন চার্ট (বার) */
+function renderTypeChart(entries) {
+  const wrap = $('#cdTypeChart');
+  if (!wrap) return;
+  const counts = {};
+  entries.forEach(e => { counts[e.type] = (counts[e.type] || 0) + 1; });
+  const total = entries.length || 1;
+
+  wrap.innerHTML = Object.entries(ENTRY_TYPES).map(([k, v]) => {
+    const c = counts[k] || 0;
+    const pct = Math.round((c / total) * 100);
+    return `
+      <div style="margin-bottom:10px;">
+        <div class="row-between" style="margin-bottom:4px;">
+          <span style="font-size:12.5px;font-weight:600;color:var(--ink2);">${v.icon} ${v.label}</span>
+          <span style="font-size:11.5px;color:var(--ink3);">${bnNum(c)} টি (${bnNum(pct)}%)</span>
+        </div>
+        <div style="height:6px;background:var(--line);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:3px;transition:width .3s;"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* শেষ ৭ দিনের বার চার্ট */
+function renderActivityChart(entries) {
+  const wrap = $('#cdActivityChart');
+  if (!wrap) return;
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push({
+      label: BN_DAYS[d.getDay()],
+      dateStr: toDateInput(d),
+      count: 0
+    });
+  }
+
+  entries.forEach(e => {
+    const ds = toDateInput(e.date || e.createdAt);
+    const slot = days.find(d => d.dateStr === ds);
+    if (slot) slot.count++;
+  });
+
+  const max = Math.max(1, ...days.map(d => d.count));
+
+  wrap.innerHTML = days.map(d => {
+    const h = Math.round((d.count / max) * 80) + 4;
+    const isToday = d.dateStr === toDateInput(Date.now());
+    return `
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="font-size:10.5px;font-weight:700;color:${d.count ? 'var(--navy)' : 'var(--ink3)'};">
+          ${bnNum(d.count)}
+        </div>
+        <div style="width:100%;height:${h}px;background:${isToday ? 'linear-gradient(180deg,var(--gold),var(--gold-dark))' : 'linear-gradient(180deg,var(--navy2),var(--navy))'};border-radius:4px 4px 0 0;transition:height .3s;"></div>
+        <div style="font-size:10px;color:var(--ink3);">${d.label}</div>
+      </div>`;
+  }).join('');
+}
+
+/* কাভারেজ চেকলিস্ট */
+function renderCoverageChecklist(c, entries, media) {
+  const wrap = $('#cdChecklist');
+  if (!wrap) return;
+
+  const hasParty = entries.some(e => e.type === 'interview');
+  const hasStat = entries.some(e => e.type === 'stat');
+  const hasDoc = entries.some(e => e.type === 'document');
+  const hasMedia = media.length > 0;
+  const hasReview = c.status === 'ready' || c.status === 'published';
+
+  const checks = [
+    { ok: hasParty,  text: 'সব পক্ষের বক্তব্য নেওয়া হয়েছে?' },
+    { ok: hasStat,   text: 'সংখ্যা যাচাই করা হয়েছে?' },
+    { ok: hasDoc,    text: 'নথি সংগ্রহ করা হয়েছে?' },
+    { ok: hasMedia,  text: 'ছবি/অডিও আছে?' },
+    { ok: hasReview, text: 'সম্পাদকীয় পর্যালোচনা?' }
+  ];
+
+  wrap.innerHTML = checks.map(c => `
+    <div class="row" style="padding:8px 0;border-bottom:1px dashed var(--line);gap:10px;">
+      <span style="font-size:16px;">${c.ok ? '✅' : '⬜'}</span>
+      <span style="font-size:13.5px;color:${c.ok ? 'var(--green)' : 'var(--ink2)'};font-weight:${c.ok ? '600' : '400'};">
+        ${c.text}
+      </span>
+    </div>
+  `).join('') + `
+    <div style="margin-top:10px;font-size:12px;color:var(--ink3);text-align:center;">
+      ${bnNum(checks.filter(x => x.ok).length)} / ${bnNum(checks.length)} সম্পন্ন
+    </div>`;
+}
+
+/* ───────────── কেস ফর্ম (নতুন / এডিট) ───────────── */
+function openCaseForm(caseObj = null) {
+  const back = $('#caseFormBackdrop');
+  const isEdit = !!caseObj;
+
+  $('#caseFormTitle').textContent = isEdit ? 'কেস এডিট' : 'নতুন কেস';
+  $('#caseFormId').value    = caseObj?.id || '';
+  $('#caseFormName').value  = caseObj?.title || '';
+  $('#caseFormDesc').value  = caseObj?.description || '';
+  $('#caseFormStatus').value = caseObj?.status || 'active';
+  $('#caseFormStart').value = toDateInput(caseObj?.startDate || Date.now());
+  $('#caseFormTags').value  = (caseObj?.tags || []).join(', ');
+  $('#caseFormPassword').value = '';
+
+  back.classList.add('show');
+}
+
+/* কেস সেভ */
+async function saveCaseForm() {
+  const id = $('#caseFormId').value;
+  const title = $('#caseFormName').value.trim();
+  if (!title) { toast('নাম দিন', 'warn'); return; }
+
+  const tags = $('#caseFormTags').value
+    .split(',').map(t => t.trim()).filter(Boolean);
+
+  const pwd = $('#caseFormPassword').value;
+
+  let data = {
+    id: id || uid('case'),
+    title,
+    description: $('#caseFormDesc').value.trim(),
+    status: $('#caseFormStatus').value,
+    startDate: $('#caseFormStart').value ? new Date($('#caseFormStart').value).getTime() : Date.now(),
+    tags,
+    updatedAt: Date.now()
+  };
+
+  if (!id) data.createdAt = Date.now();
+
+  if (id) {
+    // এডিট — আগের ডেটা রাখব
+    const old = await DB.get('cases', id);
+    data = { ...old, ...data };
+    if (pwd) data.password = await hashSimple(pwd);
+  } else {
+    data.createdAt = Date.now();
+    if (pwd) data.password = await hashSimple(pwd);
+  }
+
+  await DB.put('cases', data);
+  toast(id ? 'আপডেট হয়েছে' : 'কেস যোগ হয়েছে', 'success');
+  $('#caseFormBackdrop').classList.remove('show');
+
+  if (State.view === 'caseDetail' && State.caseId === data.id) {
+    State.caseData = data;
+    $('#cdTitle').textContent = data.title;
+    await refreshCaseDetail();
+  } else {
+    renderCaseList();
+  }
+  if (State.view === 'home') renderHome();
+}
+
+/* সিম্পল হ্যাশ (SHA-256) */
+async function hashSimple(str) {
+  const buf = new TextEncoder().encode(str);
+  const h = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(h))
+    .map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* কেস ডিলিট */
+async function deleteCase(caseId) {
+  const ok = await confirmDialog('কেস মুছবেন?',
+    'এই কেসের সব এন্ট্রি, মিডিয়া, Entity ও রিপোর্টও মুছে যাবে। ফেরানো যাবে না।');
+  if (!ok) return;
+
+  await DB.deleteByIndex('entries', 'caseId', caseId);
+  await DB.deleteByIndex('entities', 'caseId', caseId);
+  await DB.deleteByIndex('media', 'caseId', caseId);
+  await DB.deleteByIndex('reports', 'caseId', caseId);
+  await DB.delete('cases', caseId);
+
+  toast('কেস মুছে ফেলা হয়েছে', 'success');
+  State.caseId = null;
+  State.caseData = null;
+  navigateTo('cases');
+  renderCaseList();
+  if (State.view === 'home') renderHome();
+}
+
+/* ───────────── আরও (সেটিংস) হালকা রেন্ডার ───────────── */
+async function renderMore() {
+  const pinHash = await DB.getSetting('pinHash', null);
+  const st = $('#morePinStatus');
+  if (st) st.textContent = pinHash ? '✅ সেট করা আছে' : 'সেট করা হয়নি';
+
+  // স্টোরেজ তথ্য
+  try {
+    const stats = await DB.stats();
+    const info = $('#moreStorageInfo');
+    if (info) {
+      info.textContent = `কেস ${bnNum(stats.cases || 0)} • এন্ট্রি ${bnNum(stats.entries || 0)} • মিডিয়া ${bnNum(stats.media || 0)}`;
+    }
+  } catch (_) {}
+}
+
+/* ───────────── ফাইল ডাউনলোড হেল্পার ───────────── */
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadText(text, filename, mime = 'text/plain') {
+  downloadBlob(new Blob([text], { type: mime + ';charset=utf-8' }), filename);
+}
+
+/* ───────────── CSV হেল্পার ───────────── */
+function csvEscape(v) {
+  if (v == null) return '';
+  const s = String(v).replace(/"/g, '""');
+  return /[",\n]/.test(s) ? `"${s}"` : s;
+}
+function toCSV(rows, headers) {
+  const head = headers.map(h => csvEscape(h.label)).join(',');
+  const body = rows.map(r => headers.map(h => csvEscape(h.get(r))).join(',')).join('\n');
+  return head + '\n' + body;
+}
+</script>
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — Entity সিস্টেম
+   ═══════════════════════════════════════════════ */
+
+async function openEntityManager() {
+  if (!State.caseId) { toast('আগে কেস খুলুন', 'warn'); return; }
+  const c = await DB.get('cases', State.caseId);
+  $('#entCaseName').textContent = `কেস: ${c?.title || '—'}`;
+  $$('#entTabs .chip').forEach(ch => ch.classList.toggle('active', ch.dataset.enttab === 'person'));
+  $('#entSearch').value = '';
+  await renderEntityList();
+  navigateTo('entities');
+}
+
+async function renderEntityList() {
+  const activeTab = $('#entTabs .chip.active')?.dataset.enttab || 'person';
+  const q = ($('#entSearch').value || '').toLowerCase().trim();
+  const all = await DB.getByIndex('entities', 'caseId', State.caseId);
+  State.entities = all;
+  let list = all.filter(e => e.type === activeTab);
+  if (q) {
+    list = list.filter(e =>
+      (e.name || '').toLowerCase().includes(q) ||
+      (e.designation || '').toLowerCase().includes(q) ||
+      (e.address || '').toLowerCase().includes(q)
+    );
+  }
+  list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  const wrap = $('#entListContainer');
+  const info = ENTITY_TYPES[activeTab];
+  if (!list.length) {
+    wrap.innerHTML = `<div class="empty"><div class="em-ico">${info.icon}</div>
+      <div class="em-title">${info.label} নেই</div>
+      <div class="em-sub">নিচের ➕ বাটনে চাপ দিয়ে যোগ করুন</div></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(e => entityItemHTML(e)).join('');
+}
+
+function entityItemHTML(e) {
+  const info = ENTITY_TYPES[e.type] || ENTITY_TYPES.person;
+  const sub = e.designation || e.address || e.role || '';
+  return `<div class="list-item" data-open-entity="${esc(e.id)}">
+    <div class="li-ico">${info.icon}</div>
+    <div class="li-body">
+      <div class="li-title">${esc(e.name || '—')}</div>
+      ${sub ? `<div class="li-sub">${esc(sub)}</div>` : ''}
+    </div>
+    <div class="li-tail">›</div>
+  </div>`;
+}
+
+function openEntityForm(type, entity = null) {
+  if (!State.caseId) { toast('আগে কেস খুলুন', 'warn'); return; }
+  State.editingEntityId = entity?.id || null;
+  State.editingEntityType = type;
+  const info = ENTITY_TYPES[type];
+  $('#entityFormTitle').textContent = entity
+    ? `${info.icon} ${info.label} এডিট`
+    : `${info.icon} নতুন ${info.label}`;
+  $('#entityFormId').value = entity?.id || '';
+  $('#entityFormCaseId').value = State.caseId;
+  $('#entityFormType').value = type;
+  $('#entityFormName').value = entity?.name || '';
+  $('#entityFormNotes').value = entity?.notes || '';
+  $('#entityFormDelete').style.display = entity ? 'inline-flex' : 'none';
+  $('#entityDynamicFields').innerHTML = entityFieldsHTML(type, entity || {});
+  $('#entityFormBackdrop').classList.add('show');
+}
+
+function entityFieldsHTML(type, e) {
+  if (type === 'person') {
+    return `<div class="form-group"><label>পদবি / পরিচয়</label>
+      <input type="text" class="input" id="entDesignation" value="${esc(e.designation || '')}" placeholder="যেমন: শিক্ষক"></div>
+      <div class="form-row">
+        <div class="form-group"><label>মোবাইল</label>
+        <input type="tel" class="input" id="entMobile" value="${esc(e.mobile || '')}"></div>
+        <div class="form-group"><label>সম্পর্ক</label>
+        <select class="select" id="entRole">
+          ${['সাক্ষী','অভিযুক্ত','পক্ষ','বিশেষজ্ঞ','অন্যান্য'].map(r =>
+            `<option value="${r}" ${e.role === r ? 'selected' : ''}>${r}</option>`).join('')}
+        </select></div>
+      </div>
+      <div class="form-group"><label>ঠিকানা</label>
+      <input type="text" class="input" id="entAddress" value="${esc(e.address || '')}"></div>`;
+  }
+  if (type === 'place') {
+    return `<div class="form-group"><label>ঠিকানা</label>
+      <input type="text" class="input" id="entAddress" value="${esc(e.address || '')}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>ধরন</label>
+        <select class="select" id="entPlaceType">
+          ${['স্কুল','অফিস','গ্রাম','বাজার','অন্যান্য'].map(t =>
+            `<option value="${t}" ${e.placeType === t ? 'selected' : ''}>${t}</option>`).join('')}
+        </select></div>
+        <div class="form-group"><label>GPS</label>
+        <input type="text" class="input" id="entGps" value="${esc(e.gps || '')}" placeholder="lat, lng"></div>
+      </div>`;
+  }
+  if (type === 'org') {
+    return `<div class="form-row">
+        <div class="form-group"><label>ধরন</label>
+        <select class="select" id="entOrgType">
+          ${['সরকারি','বেসরকারি','এনজিও','মিডিয়া','অন্যান্য'].map(t =>
+            `<option value="${t}" ${e.orgType === t ? 'selected' : ''}>${t}</option>`).join('')}
+        </select></div>
+        <div class="form-group"><label>যোগাযোগ</label>
+        <input type="text" class="input" id="entContact" value="${esc(e.contact || '')}"></div>
+      </div>
+      <div class="form-group"><label>ঠিকানা</label>
+      <input type="text" class="input" id="entAddress" value="${esc(e.address || '')}"></div>`;
+  }
+  if (type === 'event') {
+    return `<div class="form-row">
+        <div class="form-group"><label>তারিখ</label>
+        <input type="date" class="input" id="entEventDate" value="${e.eventDate || ''}"></div>
+        <div class="form-group"><label>সময়</label>
+        <input type="time" class="input" id="entEventTime" value="${esc(e.eventTime || '')}"></div>
+      </div>
+      <div class="form-group"><label>স্থান</label>
+      <input type="text" class="input" id="entEventPlace" value="${esc(e.place || '')}"></div>
+      <div class="form-group"><label>বর্ণনা</label>
+      <textarea class="textarea" id="entEventDesc" rows="3">${esc(e.description || '')}</textarea></div>`;
+  }
+  return '';
+}
+
+async function saveEntityForm() {
+  const id = $('#entityFormId').value;
+  const type = $('#entityFormType').value;
+  const name = $('#entityFormName').value.trim();
+  if (!name) { toast('নাম দিন', 'warn'); return; }
+  const data = {
+    id: id || uid('ent'),
+    caseId: State.caseId,
+    type, name,
+    notes: $('#entityFormNotes').value.trim(),
+    updatedAt: Date.now()
+  };
+  if (!id) data.createdAt = Date.now();
+  if (type === 'person') {
+    data.designation = $('#entDesignation')?.value.trim() || '';
+    data.mobile = $('#entMobile')?.value.trim() || '';
+    data.role = $('#entRole')?.value || 'সাক্ষী';
+    data.address = $('#entAddress')?.value.trim() || '';
+  } else if (type === 'place') {
+    data.address = $('#entAddress')?.value.trim() || '';
+    data.placeType = $('#entPlaceType')?.value || 'অন্যান্য';
+    data.gps = $('#entGps')?.value.trim() || '';
+  } else if (type === 'org') {
+    data.orgType = $('#entOrgType')?.value || 'অন্যান্য';
+    data.contact = $('#entContact')?.value.trim() || '';
+    data.address = $('#entAddress')?.value.trim() || '';
+  } else if (type === 'event') {
+    data.eventDate = $('#entEventDate')?.value || '';
+    data.eventTime = $('#entEventTime')?.value || '';
+    data.place = $('#entEventPlace')?.value.trim() || '';
+    data.description = $('#entEventDesc')?.value.trim() || '';
+  }
+  await DB.put('entities', data);
+  toast(id ? 'আপডেট হয়েছে' : 'যোগ হয়েছে', 'success');
+  $('#entityFormBackdrop').classList.remove('show');
+  await renderEntityList();
+  await refreshCaseDetail();
+}
+
+async function deleteEntity() {
+  const id = $('#entityFormId').value;
+  if (!id) return;
+  const ok = await confirmDialog('Entity মুছবেন?', 'এই Entity এর সব ডেটা মুছে যাবে।');
+  if (!ok) return;
+  await DB.delete('entities', id);
+  toast('মুছে ফেলা হয়েছে', 'success');
+  $('#entityFormBackdrop').classList.remove('show');
+  await renderEntityList();
+  await refreshCaseDetail();
+}
+
+/* Entity পিকার */
+let _entityPickerResolve = null;
+function openEntityPicker(defaultType = 'person') {
+  return new Promise(async (resolve) => {
+    _entityPickerResolve = resolve;
+    $$('#entityPickerTabs .chip').forEach(ch =>
+      ch.classList.toggle('active', ch.dataset.eptab === defaultType));
+    $('#entityPickerSearch').value = '';
+    await renderEntityPickerList();
+    $('#entityPickerBackdrop').classList.add('show');
+  });
+}
+async function renderEntityPickerList() {
+  const tab = $('#entityPickerTabs .chip.active')?.dataset.eptab || 'person';
+  const q = ($('#entityPickerSearch').value || '').toLowerCase().trim();
+  const all = await DB.getByIndex('entities', 'caseId', State.caseId);
+  let list = all.filter(e => e.type === tab);
+  if (q) list = list.filter(e => (e.name || '').toLowerCase().includes(q));
+  const wrap = $('#entityPickerList');
+  if (!list.length) {
+    wrap.innerHTML = `<div class="empty" style="padding:20px;"><div class="em-sub">এই ধরনে কিছু নেই</div></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(e => `<div class="list-item" data-pick-entity="${esc(e.id)}">
+    <div class="li-ico">${ENTITY_TYPES[e.type].icon}</div>
+    <div class="li-body"><div class="li-title">${esc(e.name)}</div>
+      ${e.designation ? `<div class="li-sub">${esc(e.designation)}</div>` : ''}</div>
+  </div>`).join('');
+}
+function closeEntityPicker(entityId = null) {
+  $('#entityPickerBackdrop').classList.remove('show');
+  if (_entityPickerResolve) { _entityPickerResolve(entityId); _entityPickerResolve = null; }
+}
+function debounce(fn, ms = 250) {
+  let t;
+  return function (...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+function bindEntityEvents() {
+  $$('#entTabs .chip').forEach(ch => ch.addEventListener('click', () => {
+    $$('#entTabs .chip').forEach(c => c.classList.remove('active'));
+    ch.classList.add('active');
+    renderEntityList();
+  }));
+  $('#entSearch')?.addEventListener('input', debounce(renderEntityList, 250));
+  $('#entCloseBtn')?.addEventListener('click', () => navigateTo('caseDetail'));
+  $('#entAddBtn')?.addEventListener('click', () => {
+    const type = $('#entTabs .chip.active')?.dataset.enttab || 'person';
+    openEntityForm(type);
+  });
+  $('#entityFormSave')?.addEventListener('click', saveEntityForm);
+  $('#entityFormCancel')?.addEventListener('click', () => $('#entityFormBackdrop').classList.remove('show'));
+  $('#entityFormClose')?.addEventListener('click', () => $('#entityFormBackdrop').classList.remove('show'));
+  $('#entityFormDelete')?.addEventListener('click', deleteEntity);
+  $('#entListContainer')?.addEventListener('click', async (ev) => {
+    const item = ev.target.closest('[data-open-entity]');
+    if (!item) return;
+    const e = await DB.get('entities', item.dataset.openEntity);
+    if (e) openEntityForm(e.type, e);
+  });
+  $$('#entityPickerTabs .chip').forEach(ch => ch.addEventListener('click', () => {
+    $$('#entityPickerTabs .chip').forEach(c => c.classList.remove('active'));
+    ch.classList.add('active');
+    renderEntityPickerList();
+  }));
+  $('#entityPickerSearch')?.addEventListener('input', debounce(renderEntityPickerList, 250));
+  $('#entityPickerClose')?.addEventListener('click', () => closeEntityPicker(null));
+  $('#entityPickerCancel')?.addEventListener('click', () => closeEntityPicker(null));
+  $('#entityPickerNewBtn')?.addEventListener('click', () => {
+    const type = $('#entityPickerTabs .chip.active')?.dataset.eptab || 'person';
+    closeEntityPicker(null);
+    openEntityForm(type);
+  });
+  $('#entityPickerList')?.addEventListener('click', (ev) => {
+    const item = ev.target.closest('[data-pick-entity]');
+    if (!item) return;
+    closeEntityPicker(item.dataset.pickEntity);
+  });
+}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — এন্ট্রি সিস্টেম
+   ═══════════════════════════════════════════════ */
+
+async function openEntryForm(entryId = null, type = null, caseId = null) {
+  const isEdit = !!entryId;
+  let entry = null;
+  if (isEdit) {
+    entry = await DB.get('entries', entryId);
+    if (!entry) { toast('এন্ট্রি পাওয়া যায়নি', 'error'); return; }
+    caseId = entry.caseId;
+    type = entry.type;
+  }
+  const cases = await DB.getAll('cases');
+  if (!cases.length) { toast('আগে একটি কেস বানান', 'warn'); openCaseForm(); return; }
+  if (!caseId) caseId = State.caseId || cases[0].id;
+  State.editingEntryId = entryId;
+
+  $('#entryFormTitle').textContent = isEdit ? 'এন্ট্রি এডিট' : 'নতুন এন্ট্রি';
+  $('#entryFormId').value = entryId || '';
+  $('#entryFormCaseId').value = caseId;
+  $('#entryFormType').value = type || 'note';
+  $('#entryFormTypeSelect').value = type || 'note';
+  $('#entryCaseGroup').classList.toggle('hidden', cases.length < 2);
+  $('#entryFormCaseSelect').innerHTML = cases.map(c =>
+    `<option value="${esc(c.id)}" ${c.id === caseId ? 'selected' : ''}>${esc(c.title)}</option>`).join('');
+  $('#entryTypeGroup').style.display = isEdit ? 'none' : 'block';
+  $('#entryFormTitleInput').value = entry?.title || '';
+  $('#entryFormDate').value = toDateInput(entry?.date || Date.now());
+  $('#entryFormTime').value = toTimeInput(entry?.date || Date.now());
+  $('#entryFormNotes').value = entry?.notes || '';
+  $('#entryFormTags').value = (entry?.tags || []).join(', ');
+  renderEntryDynamicFields(type || 'note', entry || {});
+  State._entryMedia = entry?.mediaIds ? [...entry.mediaIds] : [];
+  await renderEntryAttachedMedia();
+  State._entryEntities = entry?.linkedEntities ? [...entry.linkedEntities] : [];
+  await renderEntryLinkedEntities();
+  $('#entryFormDelete').style.display = isEdit ? 'inline-flex' : 'none';
+  $('#entryFormBackdrop').classList.add('show');
+}
+
+function renderEntryDynamicFields(type, e) {
+  const wrap = $('#entryDynamicFields');
+  if (!wrap) return;
+  if (type === 'interview') {
+    const qas = e.qa || [{ q: '', a: '' }];
+    wrap.innerHTML = `
+      <div class="form-group"><label>তথ্যদাতার নাম</label>
+        <input type="text" class="input" id="entInfoName" value="${esc(e.interviewee || '')}" placeholder="নাম"></div>
+      <div class="form-row">
+        <div class="form-group"><label>পদবি</label>
+          <input type="text" class="input" id="entInfoDesig" value="${esc(e.intervieweeDesig || '')}"></div>
+        <div class="form-group"><label>যোগাযোগ</label>
+          <input type="text" class="input" id="entInfoContact" value="${esc(e.intervieweeContact || '')}"></div>
+      </div>
+      <div class="form-group"><label>প্রশ্ন-উত্তর</label>
+        <div id="qaList">${qas.map((qa, i) => qaRowHTML(qa, i)).join('')}</div>
+        <button class="btn btn-ghost btn-sm mt-8" id="addQaBtn" type="button">＋ প্রশ্ন যোগ</button></div>`;
+    return;
+  }
+  if (type === 'event') {
+    wrap.innerHTML = `
+      <div class="form-group"><label>স্থান</label>
+        <input type="text" class="input" id="evtPlace" value="${esc(e.place || '')}"></div>
+      <div class="form-group"><label>কী ঘটেছে (বিস্তারিত)</label>
+        <textarea class="textarea" id="evtDesc" rows="4">${esc(e.description || '')}</textarea></div>
+      <div class="form-group"><label>জড়িত ব্যক্তি</label>
+        <input type="text" class="input" id="evtPeople" value="${esc(e.people || '')}" placeholder="নাম, নাম"></div>`;
+    return;
+  }
+  if (type === 'document') {
+    wrap.innerHTML = `
+      <div class="form-row">
+        <div class="form-group"><label>ধরন</label>
+          <select class="select" id="docType">
+            ${['সরকারি চিঠি','রিপোর্ট','তদন্ত','বাজেট','আদালত','অন্যান্য'].map(t =>
+              `<option value="${t}" ${e.docType === t ? 'selected' : ''}>${t}</option>`).join('')}
+          </select></div>
+        <div class="form-group"><label>যাচাই স্টেটাস</label>
+          <select class="select" id="docVerify">
+            ${['প্রাথমিক','যাচাইকৃত','সন্দেহজনক'].map(t =>
+              `<option value="${t}" ${e.verify === t ? 'selected' : ''}>${t}</option>`).join('')}
+          </select></div>
+      </div>
+      <div class="form-group"><label>সূত্র</label>
+        <input type="text" class="input" id="docSource" value="${esc(e.source || '')}"></div>
+      <div class="form-group"><label>মূল অংশ</label>
+        <textarea class="textarea" id="docContent" rows="4">${esc(e.content || '')}</textarea></div>`;
+    return;
+  }
+  if (type === 'stat') {
+    const nums = e.numbers || [{ label: '', value: '' }];
+    wrap.innerHTML = `
+      <div class="form-group"><label>সংখ্যা</label>
+        <div id="statList">${nums.map((n, i) => statRowHTML(n, i)).join('')}</div>
+        <button class="btn btn-ghost btn-sm mt-8" id="addStatBtn" type="button">＋ সংখ্যা যোগ</button></div>
+      <div class="form-group"><label>উৎস</label>
+        <input type="text" class="input" id="statSource" value="${esc(e.source || '')}"></div>
+      <div class="form-group"><label>উৎসের তারিখ</label>
+        <input type="date" class="input" id="statSourceDate" value="${e.sourceDate || ''}"></div>`;
+    return;
+  }
+  if (type === 'quote') {
+    wrap.innerHTML = `
+      <div class="form-group"><label>উদ্ধৃতি <span class="req">*</span></label>
+        <textarea class="textarea" id="quoteText" rows="3">${esc(e.quote || '')}</textarea></div>
+      <div class="form-group"><label>কে বলেছেন</label>
+        <input type="text" class="input" id="quoteWho" value="${esc(e.quoteWho || '')}"></div>
+      <div class="form-group"><label>প্রেক্ষাপট</label>
+        <textarea class="textarea" id="quoteContext" rows="2">${esc(e.quoteContext || '')}</textarea></div>`;
+    return;
+  }
+  wrap.innerHTML = '';
+}
+
+function qaRowHTML(qa, i) {
+  return `<div style="padding:10px;margin-bottom:8px;background:var(--bg);border-radius:var(--r-sm);" data-qa-row>
+    <input type="text" class="input mb-12" data-qa-q placeholder="প্রশ্ন" value="${esc(qa.q || '')}">
+    <textarea class="textarea" data-qa-a rows="2" placeholder="উত্তর">${esc(qa.a || '')}</textarea>
+    <button class="btn btn-ghost btn-sm mt-8" type="button" data-remove-qa>✕ সরান</button>
+  </div>`;
+}
+function statRowHTML(n, i) {
+  return `<div class="form-row" style="margin-bottom:8px;" data-stat-row>
+    <input type="text" class="input" data-stat-label placeholder="লেবেল" value="${esc(n.label || '')}">
+    <div class="row" style="gap:4px;">
+      <input type="text" class="input" data-stat-value placeholder="মান" value="${esc(n.value || '')}">
+      <button class="icon-btn danger" type="button" data-remove-stat>✕</button>
+    </div>
+  </div>`;
+}
+
+async function renderEntryAttachedMedia() {
+  const wrap = $('#entryAttachedMedia');
+  const ids = State._entryMedia || [];
+  if (!ids.length) { wrap.innerHTML = '<span style="font-size:12px;color:var(--ink3);">সংযুক্ত কিছু নেই</span>'; return; }
+  const items = [];
+  for (const id of ids) {
+    const m = await DB.get('media', id);
+    if (m) items.push(m);
+  }
+  wrap.innerHTML = items.map(m => `
+    <div class="media-tile" style="position:relative;">
+      ${m.type === 'photo' && m.data ? `<img src="${m.data}" alt="">`
+        : `<div class="mt-ico">${MEDIA_TYPES[m.type]?.icon || '📁'}</div>`}
+      <button class="icon-btn danger" type="button" data-remove-media="${esc(m.id)}"
+        style="position:absolute;top:2px;right:2px;background:rgba(192,42,42,.9);color:#fff;width:26px;height:26px;font-size:12px;">✕</button>
+    </div>`).join('');
+}
+
+async function renderEntryLinkedEntities() {
+  const wrap = $('#entryLinkedEntities');
+  const ids = State._entryEntities || [];
+  if (!ids.length) { wrap.innerHTML = '<span style="font-size:12px;color:var(--ink3);">সংযুক্ত কিছু নেই</span>'; return; }
+  const items = [];
+  for (const id of ids) {
+    const e = await DB.get('entities', id);
+    if (e) items.push(e);
+  }
+  wrap.innerHTML = items.map(e => `
+    <span class="badge badge-info" style="cursor:pointer;" data-remove-ent="${esc(e.id)}">
+      ${ENTITY_TYPES[e.type].icon} ${esc(e.name)} <span style="opacity:.6;margin-left:4px;">✕</span>
+    </span>`).join('');
+}
+
+async function saveEntryForm() {
+  const id = $('#entryFormId').value;
+  const caseId = $('#entryFormCaseId').value;
+  const type = $('#entryFormType').value;
+  const title = $('#entryFormTitleInput').value.trim();
+  if (!title) { toast('শিরোনাম দিন', 'warn'); return; }
+  if (!caseId) { toast('কেস বেছে নিন', 'warn'); return; }
+  const dateStr = $('#entryFormDate').value;
+  const timeStr = $('#entryFormTime').value || '00:00';
+  let dateTs = Date.now();
+  if (dateStr) {
+    const dt = new Date(`${dateStr}T${timeStr}:00`);
+    if (!isNaN(dt.getTime())) dateTs = dt.getTime();
+  }
+  const data = {
+    id: id || uid('ent'),
+    caseId, type, title, date: dateTs,
+    notes: $('#entryFormNotes').value.trim(),
+    tags: $('#entryFormTags').value.split(',').map(t => t.trim()).filter(Boolean),
+    linkedEntities: [...(State._entryEntities || [])],
+    mediaIds: [...(State._entryMedia || [])],
+    updatedAt: Date.now()
+  };
+  if (!id) data.createdAt = Date.now();
+  if (type === 'interview') {
+    data.interviewee = $('#entInfoName')?.value.trim() || '';
+    data.intervieweeDesig = $('#entInfoDesig')?.value.trim() || '';
+    data.intervieweeContact = $('#entInfoContact')?.value.trim() || '';
+    data.qa = $$('#qaList [data-qa-row]').map(row => ({
+      q: row.querySelector('[data-qa-q]').value.trim(),
+      a: row.querySelector('[data-qa-a]').value.trim()
+    })).filter(qa => qa.q || qa.a);
+  } else if (type === 'event') {
+    data.place = $('#evtPlace')?.value.trim() || '';
+    data.description = $('#evtDesc')?.value.trim() || '';
+    data.people = $('#evtPeople')?.value.trim() || '';
+  } else if (type === 'document') {
+    data.docType = $('#docType')?.value || '';
+    data.verify = $('#docVerify')?.value || '';
+    data.source = $('#docSource')?.value.trim() || '';
+    data.content = $('#docContent')?.value.trim() || '';
+  } else if (type === 'stat') {
+    data.numbers = $$('#statList [data-stat-row]').map(row => ({
+      label: row.querySelector('[data-stat-label]').value.trim(),
+      value: row.querySelector('[data-stat-value]').value.trim()
+    })).filter(n => n.label || n.value);
+    data.source = $('#statSource')?.value.trim() || '';
+    data.sourceDate = $('#statSourceDate')?.value || '';
+  } else if (type === 'quote') {
+    data.quote = $('#quoteText')?.value.trim() || '';
+    data.quoteWho = $('#quoteWho')?.value.trim() || '';
+    data.quoteContext = $('#quoteContext')?.value.trim() || '';
+  }
+  await DB.put('entries', data);
+  const c = await DB.get('cases', caseId);
+  if (c) { c.updatedAt = Date.now(); await DB.put('cases', c); }
+  toast(id ? 'আপডেট হয়েছে' : 'এন্ট্রি যোগ হয়েছে', 'success');
+  $('#entryFormBackdrop').classList.remove('show');
+  if (State.view === 'caseDetail' && State.caseId === caseId) {
+    await refreshCaseDetail();
+    await renderCaseEntries();
+  }
+  if (State.view === 'home') renderHome();
+}
+
+async function deleteEntry() {
+  const id = $('#entryFormId').value;
+  if (!id) return;
+  const ok = await confirmDialog('এন্ট্রি মুছবেন?', 'এই এন্ট্রি ফেরানো যাবে না।');
+  if (!ok) return;
+  await DB.delete('entries', id);
+  toast('মুছে ফেলা হয়েছে', 'success');
+  $('#entryFormBackdrop').classList.remove('show');
+  await refreshCaseDetail();
+  await renderCaseEntries();
+}
+
+async function renderCaseEntries() {
+  const wrap = $('#cdEntryList');
+  if (!wrap || !State.caseId) return;
+  const all = await DB.getByIndex('entries', 'caseId', State.caseId);
+  let list = all;
+  if (State.entryFilterType !== 'all') list = list.filter(e => e.type === State.entryFilterType);
+  const q = (State.entryQuery || '').toLowerCase();
+  if (q) {
+    list = list.filter(e =>
+      (e.title || '').toLowerCase().includes(q) ||
+      (e.notes || '').toLowerCase().includes(q) ||
+      (e.interviewee || '').toLowerCase().includes(q) ||
+      (e.quote || '').toLowerCase().includes(q)
+    );
+  }
+  list.sort((a, b) => (b.date || b.createdAt) - (a.date || a.createdAt));
+  if (!list.length) {
+    wrap.innerHTML = `<div class="empty" style="padding:30px 16px;">
+      <div class="em-ico">📝</div>
+      <div class="em-title">কোনো এন্ট্রি নেই</div>
+      <div class="em-sub">নিচের বাটনে চাপ দিয়ে যোগ করুন</div></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(e => entryItemHTML(e)).join('');
+}
+
+function entryItemHTML(e) {
+  const info = ENTRY_TYPES[e.type] || ENTRY_TYPES.note;
+  const mediaCount = (e.mediaIds || []).length;
+  const entCount = (e.linkedEntities || []).length;
+  return `<div class="list-item" data-open-entry="${esc(e.id)}" data-entry-case="${esc(e.caseId)}">
+    <div class="li-ico">${info.icon}</div>
+    <div class="li-body">
+      <div class="li-title">${esc(e.title)}</div>
+      <div class="li-sub">${info.label} • ${formatDate(e.date || e.createdAt)}
+        ${mediaCount ? ` • 🎬 ${bnNum(mediaCount)}` : ''}
+        ${entCount ? ` • 👥 ${bnNum(entCount)}` : ''}</div>
+    </div>
+    <div class="li-tail">›</div>
+  </div>`;
+}
+
+async function openEntryDetail(entryId) {
+  const e = await DB.get('entries', entryId);
+  if (!e) { toast('পাওয়া যায়নি', 'error'); return; }
+  const info = ENTRY_TYPES[e.type] || ENTRY_TYPES.note;
+  const c = await DB.get('cases', e.caseId);
+  const caseName = c?.title || '—';
+  let extra = '';
+  if (e.type === 'interview' && e.qa?.length) {
+    extra = '<div style="margin-top:12px;">' +
+      e.qa.map((qa, i) => `<div style="padding:10px;background:var(--gold-soft);border-radius:var(--r-sm);margin-bottom:8px;border-left:3px solid var(--gold);">
+        <div style="font-size:12px;color:var(--gold-dark);font-weight:700;margin-bottom:4px;">প্রশ্ন ${bnNum(i + 1)}</div>
+        <div style="font-size:13.5px;color:var(--ink);margin-bottom:8px;">${esc(qa.q)}</div>
+        <div style="font-size:12px;color:var(--navy2);font-weight:700;margin-bottom:4px;">উত্তর</div>
+        <div style="font-size:13.5px;color:var(--ink);">${esc(qa.a)}</div>
+      </div>`).join('') + '</div>';
+  }
+  if (e.type === 'event') {
+    extra = `<div style="margin-top:12px;padding:10px;background:var(--bg);border-radius:var(--r-sm);">
+      ${e.place ? `<div style="font-size:13px;margin-bottom:6px;">📍 <b>${esc(e.place)}</b></div>` : ''}
+      ${e.description ? `<div style="font-size:13.5px;color:var(--ink2);line-height:1.6;">${esc(e.description)}</div>` : ''}</div>`;
+  }
+  if (e.type === 'document') {
+    extra = `<div style="margin-top:12px;padding:10px;background:var(--green-soft);border-radius:var(--r-sm);">
+      ${e.docType ? `<div style="font-size:12.5px;margin-bottom:4px;">📄 <b>${esc(e.docType)}</b></div>` : ''}
+      ${e.source ? `<div style="font-size:12.5px;margin-bottom:4px;">সূত্র: ${esc(e.source)}</div>` : ''}
+      ${e.verify ? `<div style="font-size:12.5px;">যাচাই: <b>${esc(e.verify)}</b></div>` : ''}
+      ${e.content ? `<div style="font-size:13px;margin-top:8px;color:var(--ink2);line-height:1.6;white-space:pre-wrap;">${esc(e.content)}</div>` : ''}</div>`;
+  }
+  if (e.type === 'stat' && e.numbers?.length) {
+    extra = '<div style="margin-top:12px;">' +
+      e.numbers.map(n => `<div class="row-between" style="padding:8px 10px;background:var(--purple-soft);border-radius:var(--r-sm);margin-bottom:6px;">
+        <span style="font-size:13px;color:var(--ink2);">${esc(n.label)}</span>
+        <span style="font-size:15px;font-weight:700;color:var(--purple);">${esc(n.value)}</span>
+      </div>`).join('') + '</div>';
+  }
+  if (e.type === 'quote') {
+    extra = `<div style="margin-top:12px;padding:14px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:var(--r-sm);color:var(--white);">
+      <div style="font-size:15px;line-height:1.6;font-style:italic;">"${esc(e.quote)}"</div>
+      ${e.quoteWho ? `<div style="margin-top:8px;font-size:12.5px;color:var(--gold);">— ${esc(e.quoteWho)}</div>` : ''}
+    </div>`;
+  }
+  const bodyHTML = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <span class="badge badge-info">${info.icon} ${info.label}</span>
+      <span class="badge badge-gold">${formatDate(e.date || e.createdAt)}</span>
+    </div>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:12px;">কেস: <b>${esc(caseName)}</b></div>
+    ${e.interviewee ? `<div style="font-size:13.5px;margin-bottom:6px;"><b>তথ্যদাতা:</b> ${esc(e.interviewee)}</div>` : ''}
+    ${e.notes ? `<div style="padding:10px;background:var(--bg);border-radius:var(--r-sm);font-size:13.5px;color:var(--ink2);line-height:1.6;white-space:pre-wrap;">${esc(e.notes)}</div>` : ''}
+    ${extra}`;
+  openModal({
+    title: e.title || info.label, bodyHTML,
+    okText: '✏️ এডিট', cancelText: 'বন্ধ',
+    onOk: async () => { await openEntryForm(e.id); return false; }
+  });
+}
+
+function bindEntryEvents() {
+  $('#entryFormSave')?.addEventListener('click', saveEntryForm);
+  $('#entryFormCancel')?.addEventListener('click', () => $('#entryFormBackdrop').classList.remove('show'));
+  $('#entryFormClose')?.addEventListener('click', () => $('#entryFormBackdrop').classList.remove('show'));
+  $('#entryFormDelete')?.addEventListener('click', deleteEntry);
+  $('#entryFormTypeSelect')?.addEventListener('change', (ev) => {
+    $('#entryFormType').value = ev.target.value;
+    renderEntryDynamicFields(ev.target.value, {});
+  });
+  $('#entryFormCaseSelect')?.addEventListener('change', (ev) => {
+    $('#entryFormCaseId').value = ev.target.value;
+  });
+  $('#entryDynamicFields')?.addEventListener('click', (ev) => {
+    if (ev.target.closest('#addQaBtn')) {
+      $('#qaList').insertAdjacentHTML('beforeend', qaRowHTML({ q: '', a: '' }));
+      return;
+    }
+    if (ev.target.closest('[data-remove-qa]')) {
+      ev.target.closest('[data-qa-row]').remove();
+      return;
+    }
+    if (ev.target.closest('#addStatBtn')) {
+      $('#statList').insertAdjacentHTML('beforeend', statRowHTML({ label: '', value: '' }));
+      return;
+    }
+    if (ev.target.closest('[data-remove-stat]')) {
+      ev.target.closest('[data-stat-row]').remove();
+      return;
+    }
+  });
+  $('#entryAttachedMedia')?.addEventListener('click', (ev) => {
+    const btn = ev.target.closest('[data-remove-media]');
+    if (!btn) return;
+    State._entryMedia = (State._entryMedia || []).filter(x => x !== btn.dataset.removeMedia);
+    renderEntryAttachedMedia();
+  });
+  $('#entryLinkedEntities')?.addEventListener('click', (ev) => {
+    const badge = ev.target.closest('[data-remove-ent]');
+    if (!badge) return;
+    State._entryEntities = (State._entryEntities || []).filter(x => x !== badge.dataset.removeEnt);
+    renderEntryLinkedEntities();
+  });
+  $('#entryAddEntityBtn')?.addEventListener('click', async () => {
+    const id = await openEntityPicker('person');
+    if (id && !State._entryEntities.includes(id)) {
+      State._entryEntities.push(id);
+      renderEntryLinkedEntities();
+    }
+  });
+  $$('[data-entattach]').forEach(btn => btn.addEventListener('click', async () => {
+    const type = btn.dataset.entattach;
+    if (type === 'photo') Camera.open('photo');
+    else if (type === 'audio') Recorder.start();
+    else if (type === 'video') Camera.open('video');
+  }));
+  $('#cdEntrySearch')?.addEventListener('input', debounce((ev) => {
+    State.entryQuery = ev.target.value;
+    renderCaseEntries();
+  }, 250));
+  $$('#cdEntryTypeChips .chip').forEach(ch => ch.addEventListener('click', () => {
+    $$('#cdEntryTypeChips .chip').forEach(c => c.classList.remove('active'));
+    ch.classList.add('active');
+    State.entryFilterType = ch.dataset.etype;
+    renderCaseEntries();
+  }));
+  $('#cdAddEntryBtn')?.addEventListener('click', () => openEntryForm(null, 'note'));
+}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — মিডিয়া + রেকর্ডার + ক্যামেরা
+   ═══════════════════════════════════════════════ */
+
+const Recorder = {
+  mediaRecorder: null, chunks: [], stream: null,
+  timerInt: null, seconds: 0, paused: false,
+  active: false, dragging: false, offsetX: 0, offsetY: 0,
+
+  async start() {
+    if (this.active) return;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      toast('এই ব্রাউজারে মাইক সাপোর্ট নেই', 'error'); return;
+    }
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) { toast('মাইক্রোফোন অনুমতি দিন', 'error'); return; }
+
+    const mime = this._pickMime();
+    try {
+      this.mediaRecorder = new MediaRecorder(this.stream, mime ? { mimeType: mime } : undefined);
+    } catch (_) { this.mediaRecorder = new MediaRecorder(this.stream); }
+
+    this.chunks = []; this.seconds = 0; this.paused = false; this.active = true;
+    this.mediaRecorder.ondataavailable = (e) => { if (e.data?.size > 0) this.chunks.push(e.data); };
+    this.mediaRecorder.onstop = () => this._onStop();
+    this.mediaRecorder.start(1000);
+
+    this._ui(true);
+    this._updateTimer();
+    this.timerInt = setInterval(() => {
+      if (!this.paused) { this.seconds++; this._updateTimer(); }
+    }, 1000);
+  },
+
+  togglePause() {
+    if (!this.mediaRecorder || !this.active) return;
+    if (this.paused) {
+      this.mediaRecorder.resume();
+      this.paused = false;
+      $('#recPauseIcon').textContent = '⏸';
+      $('#recPauseLabel').textContent = 'বিরতি';
+      $('#recTimer').classList.remove('paused');
+      $('#recDot').style.animation = 'pulse 1s infinite';
+    } else {
+      this.mediaRecorder.pause();
+      this.paused = true;
+      $('#recPauseIcon').textContent = '▶';
+      $('#recPauseLabel').textContent = 'চালু';
+      $('#recTimer').classList.add('paused');
+      $('#recDot').style.animation = 'none';
+    }
+  },
+
+  done() {
+    if (!this.mediaRecorder || !this.active) return;
+    this._saveOnStop = true;
+    this.mediaRecorder.stop();
+  },
+
+  cancel() {
+    if (!this.mediaRecorder || !this.active) return;
+    this._saveOnStop = false;
+    this.mediaRecorder.stop();
+  },
+
+  async _onStop() {
+    this._stopStream();
+    clearInterval(this.timerInt);
+    if (!this._saveOnStop || !this.chunks.length) {
+      const wasSaving = this._saveOnStop;
+      this._reset();
+      this._ui(false);
+      if (wasSaving) toast('রেকর্ডিং খালি', 'warn');
+      else toast('বাতিল হয়েছে');
+      return;
+    }
+    const blob = new Blob(this.chunks, { type: this.chunks[0].type || 'audio/webm' });
+    const dur = this.seconds;
+    this._reset();
+    this._ui(false);
+    const b64 = await blobToDataURL(blob);
+    const saved = await MediaSaver.promptAndSave({
+      type: 'audio', data: b64, duration: dur, mime: blob.type, size: blob.size
+    });
+    if (saved) toast('✅ অডিও সংরক্ষিত', 'success');
+  },
+
+  _stopStream() {
+    try { this.stream?.getTracks().forEach(t => t.stop()); } catch (_) {}
+    this.stream = null; this.mediaRecorder = null;
+  },
+  _reset() {
+    this.chunks = []; this.seconds = 0; this.paused = false; this.active = false;
+  },
+  _ui(show) {
+    const el = $('#recorder');
+    if (!el) return;
+    if (show) {
+      el.classList.add('show');
+      el.classList.remove('minimized');
+      this._restorePosition();
+      $('#recTimer').textContent = '০০:০০';
+      $('#recTimer').classList.remove('paused');
+      $('#recPauseIcon').textContent = '⏸';
+      $('#recPauseLabel').textContent = 'বিরতি';
+      $('#recDot').style.animation = 'pulse 1s infinite';
+    } else {
+      el.classList.remove('show', 'minimized');
+    }
+  },
+  _updateTimer() {
+    const m = String(Math.floor(this.seconds / 60)).padStart(2, '0');
+    const s = String(this.seconds % 60).padStart(2, '0');
+    const el = $('#recTimer');
+    if (el) el.textContent = `${bnNum(m)}:${bnNum(s)}`;
+  },
+  toggleMin() { $('#recorder')?.classList.toggle('minimized'); },
+  _savePosition(x, y) { try { localStorage.setItem('te_rec_pos', JSON.stringify({ x, y })); } catch (_) {} },
+  _restorePosition() {
+    try {
+      const raw = localStorage.getItem('te_rec_pos');
+      if (!raw) return;
+      const { x, y } = JSON.parse(raw);
+      const el = $('#recorder');
+      if (!el) return;
+      const maxX = window.innerWidth - el.offsetWidth - 8;
+      const maxY = window.innerHeight - el.offsetHeight - 8;
+      el.style.left = Math.max(8, Math.min(x, maxX)) + 'px';
+      el.style.top = Math.max(8, Math.min(y, maxY)) + 'px';
+      el.style.right = 'auto'; el.style.bottom = 'auto';
+    } catch (_) {}
+  },
+  _pickMime() {
+    const list = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+    for (const m of list) if (window.MediaRecorder?.isTypeSupported?.(m)) return m;
+    return '';
+  }
+};
+
+const Camera = {
+  stream: null, mode: 'photo', facing: 'environment',
+  videoRecorder: null, chunks: [], timerInt: null, seconds: 0, recording: false,
+  _bound: false,
+
+  async open(mode = 'photo') {
+    this.mode = mode;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      toast('এই ব্রাউজারে ক্যামেরা সাপোর্ট নেই', 'error'); return;
+    }
+    $('#cameraTitle').textContent = mode === 'photo' ? '📷 ছবি তুলুন'
+                                 : mode === 'video' ? '🎥 ভিডিও রেকর্ড' : '📷 ক্যামেরা';
+    try { await this._startStream(); }
+    catch (err) { toast('ক্যামেরা অনুমতি দিন', 'error'); return; }
+    $('#cameraBackdrop').classList.add('show');
+    $('#cameraStopBtn').classList.add('hidden');
+    $('#cameraCaptureBtn').classList.remove('hidden');
+    $('#cameraTimer').style.display = 'none';
+    this._bind();
+  },
+
+  async _startStream() {
+    if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; }
+    this.stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: this.facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: this.mode === 'video'
+    });
+    const vid = $('#cameraVideo');
+    vid.srcObject = this.stream;
+    vid.play().catch(() => {});
+  },
+
+  close() {
+    if (this.recording) this._stopRecording(true);
+    try { this.stream?.getTracks().forEach(t => t.stop()); } catch (_) {}
+    this.stream = null;
+    clearInterval(this.timerInt);
+    $('#cameraBackdrop').classList.remove('show');
+  },
+
+  async flip() {
+    this.facing = this.facing === 'environment' ? 'user' : 'environment';
+    try { await this._startStream(); } catch (_) {}
+  },
+
+  capturePhoto() {
+    const vid = $('#cameraVideo');
+    const canvas = $('#cameraCanvas');
+    const w = vid.videoWidth, h = vid.videoHeight;
+    if (!w || !h) { toast('ক্যামেরা প্রস্তুত নয়', 'warn'); return; }
+    const maxW = 1600;
+    const scale = Math.min(1, maxW / w);
+    canvas.width = Math.round(w * scale);
+    canvas.height = Math.round(h * scale);
+    canvas.getContext('2d').drawImage(vid, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(async (blob) => {
+      if (!blob) { toast('ছবি ব্যর্থ', 'error'); return; }
+      const b64 = await blobToDataURL(blob);
+      this.close();
+      const saved = await MediaSaver.promptAndSave({
+        type: 'photo', data: b64, size: blob.size,
+        width: canvas.width, height: canvas.height
+      });
+      if (saved) toast('✅ ছবি সেভ হয়েছে', 'success');
+    }, 'image/jpeg', 0.82);
+  },
+
+  startVideoRec() {
+    if (!this.stream || this.mode !== 'video') return;
+    const mime = this._pickMime();
+    try {
+      this.videoRecorder = new MediaRecorder(this.stream, mime ? { mimeType: mime } : undefined);
+    } catch (_) { this.videoRecorder = new MediaRecorder(this.stream); }
+    this.chunks = [];
+    this.videoRecorder.ondataavailable = (e) => { if (e.data?.size > 0) this.chunks.push(e.data); };
+    this.videoRecorder.onstop = () => this._onVideoStop();
+    this.videoRecorder.start(1000);
+    this.recording = true; this.seconds = 0;
+    $('#cameraCaptureBtn').classList.add('hidden');
+    $('#cameraStopBtn').classList.remove('hidden');
+    $('#cameraTimer').style.display = 'block';
+    this._updateTimer();
+    this.timerInt = setInterval(() => {
+      this.seconds++;
+      this._updateTimer();
+      if (this.seconds >= 180) this._stopRecording(false);
+    }, 1000);
+  },
+
+  _stopRecording(silent) {
+    if (!this.videoRecorder) return;
+    clearInterval(this.timerInt);
+    this._stopSilent = silent;
+    try { this.videoRecorder.stop(); } catch (_) {}
+  },
+
+  async _onVideoStop() {
+    this.recording = false;
+    const chunks = this.chunks;
+    this.chunks = [];
+    $('#cameraCaptureBtn').classList.remove('hidden');
+    $('#cameraStopBtn').classList.add('hidden');
+    $('#cameraTimer').style.display = 'none';
+    if (this._stopSilent || !chunks.length) { this._stopSilent = false; return; }
+    const blob = new Blob(chunks, { type: chunks[0].type || 'video/webm' });
+    const dur = this.seconds;
+    if (blob.size > 20 * 1024 * 1024) { toast('ভিডিও বেশি বড় (২০ MB+)', 'error'); return; }
+    this.close();
+    const b64 = await blobToDataURL(blob);
+    const saved = await MediaSaver.promptAndSave({
+      type: 'video', data: b64, duration: dur, mime: blob.type, size: blob.size
+    });
+    if (saved) toast('✅ ভিডিও সেভ হয়েছে', 'success');
+  },
+
+  _updateTimer() {
+    const m = String(Math.floor(this.seconds / 60)).padStart(2, '0');
+    const s = String(this.seconds % 60).padStart(2, '0');
+    $('#cameraTimer').textContent = `● ${bnNum(m)}:${bnNum(s)}`;
+  },
+
+  _bind() {
+    if (this._bound) return;
+    this._bound = true;
+    $('#cameraCloseBtn')?.addEventListener('click', () => this.close());
+    $('#cameraCancelBtn')?.addEventListener('click', () => this.close());
+    $('#cameraFlipBtn')?.addEventListener('click', () => this.flip());
+    $('#cameraCaptureBtn')?.addEventListener('click', () => {
+      if (this.mode === 'photo') this.capturePhoto();
+      else this.startVideoRec();
+    });
+    $('#cameraStopBtn')?.addEventListener('click', () => this._stopRecording(false));
+  },
+
+  _pickMime() {
+    const list = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+    for (const m of list) if (window.MediaRecorder?.isTypeSupported?.(m)) return m;
+    return '';
+  }
+};
+
+function blobToDataURL(blob) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = () => reject(fr.error);
+    fr.readAsDataURL(blob);
+  });
+}
+function dataURLtoBlob(dataURL) {
+  const [meta, b64] = dataURL.split(',');
+  const mime = (meta.match(/data:([^;]+)/) || [])[1] || 'application/octet-stream';
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+/* ─── রেকর্ডার ড্র্যাগ ─── */
+function bindRecorderDrag() {
+  const el = $('#recorder');
+  const handle = $('#recDragHandle');
+  if (!el || !handle) return;
+  const onDown = (e) => {
+    if (e.target.closest('#recMinimizeBtn')) return;
+    Recorder.dragging = true;
+    const rect = el.getBoundingClientRect();
+    const pt = e.touches ? e.touches[0] : e;
+    Recorder.offsetX = pt.clientX - rect.left;
+    Recorder.offsetY = pt.clientY - rect.top;
+    el.style.right = 'auto'; el.style.bottom = 'auto';
+    e.preventDefault();
+  };
+  const onMove = (e) => {
+    if (!Recorder.dragging) return;
+    const pt = e.touches ? e.touches[0] : e;
+    let x = pt.clientX - Recorder.offsetX;
+    let y = pt.clientY - Recorder.offsetY;
+    x = Math.max(0, Math.min(x, window.innerWidth - el.offsetWidth));
+    y = Math.max(0, Math.min(y, window.innerHeight - el.offsetHeight));
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    e.preventDefault();
+  };
+  const onUp = () => {
+    if (!Recorder.dragging) return;
+    Recorder.dragging = false;
+    const rect = el.getBoundingClientRect();
+    Recorder._savePosition(rect.left, rect.top);
+  };
+  handle.addEventListener('mousedown', onDown);
+  handle.addEventListener('touchstart', onDown, { passive: false });
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchend', onUp);
+}
+
+function bindRecorderButtons() {
+  $('#recPauseBtn')?.addEventListener('click', () => Recorder.togglePause());
+  $('#recDoneBtn')?.addEventListener('click', () => Recorder.done());
+  $('#recCancelBtn')?.addEventListener('click', () => Recorder.cancel());
+  $('#recMinimizeBtn')?.addEventListener('click', (e) => { e.stopPropagation(); Recorder.toggleMin(); });
+  $('#recorder')?.addEventListener('click', () => {
+    if ($('#recorder').classList.contains('minimized')) Recorder.toggleMin();
+  });
+}
+
+/* ═══ MediaSaver — কেস+এন্ট্রি সিলেক্ট করে সেভ ═══ */
+const MediaSaver = {
+  pending: null,
+  async promptAndSave(mediaData) {
+    const cases = await DB.getAll('cases');
+    if (!cases.length) { toast('আগে কেস বানান', 'warn'); return null; }
+
+    let caseId = State.caseId || cases[0].id;
+    let entryId = null;
+
+    return new Promise(async (resolve) => {
+      const entries = await DB.getByIndex('entries', 'caseId', caseId);
+      const bodyHTML = `
+        <div class="form-group"><label>কেস</label>
+          <select class="select" id="msCase">
+            ${cases.map(c => `<option value="${esc(c.id)}" ${c.id === caseId ? 'selected' : ''}>${esc(c.title)}</option>`).join('')}
+          </select></div>
+        <div class="form-group"><label>এন্ট্রি (ঐচ্ছিক)</label>
+          <select class="select" id="msEntry">
+            <option value="">— কোনো এন্ট্রিতে সংযুক্ত করব না —</option>
+            ${entries.map(e => `<option value="${esc(e.id)}">${esc(e.title)}</option>`).join('')}
+          </select></div>
+        <div class="form-group"><label>ক্যাপশন</label>
+          <input type="text" class="input" id="msCaption" placeholder="ঐচ্ছিক ক্যাপশন"></div>`;
+
+      const back = $('#modalBackdrop');
+      $('#modalTitle').textContent = 'মিডিয়া সংরক্ষণ';
+      $('#modalBody').innerHTML = bodyHTML;
+      $('#modalOk').textContent = '💾 সেভ';
+      $('#modalCancel').textContent = 'বাতিল';
+
+      // কেস বদলালে এন্ট্রি রিফ্রেশ
+      setTimeout(() => {
+        $('#msCase')?.addEventListener('change', async (ev) => {
+          const cid = ev.target.value;
+          const es = await DB.getByIndex('entries', 'caseId', cid);
+          $('#msEntry').innerHTML = `<option value="">— কোনো এন্ট্রিতে সংযুক্ত করব না —</option>` +
+            es.map(e => `<option value="${esc(e.id)}">${esc(e.title)}</option>`).join('');
+        });
+      }, 30);
+
+      const cleanup = async (save) => {
+        back.classList.remove('show');
+        $('#modalOk').removeEventListener('click', onOk);
+        $('#modalCancel').removeEventListener('click', onClose);
+        $('#modalClose').removeEventListener('click', onClose);
+        if (!save) { resolve(null); return; }
+        const cid = $('#msCase').value;
+        const eid = $('#msEntry').value || null;
+        const caption = $('#msCaption').value.trim();
+        const doc = {
+          id: uid('med'),
+          caseId: cid,
+          entryId: eid,
+          type: mediaData.type,
+          data: mediaData.data,
+          mime: mediaData.mime || '',
+          size: mediaData.size || 0,
+          duration: mediaData.duration || 0,
+          width: mediaData.width || 0,
+          height: mediaData.height || 0,
+          caption,
+          date: Date.now(),
+          createdAt: Date.now()
+        };
+        await DB.put('media', doc);
+        if (eid) {
+          const entry = await DB.get('entries', eid);
+          if (entry) {
+            entry.mediaIds = entry.mediaIds || [];
+            if (!entry.mediaIds.includes(doc.id)) entry.mediaIds.push(doc.id);
+            entry.updatedAt = Date.now();
+            await DB.put('entries', entry);
+          }
+        }
+        const c = await DB.get('cases', cid);
+        if (c) { c.updatedAt = Date.now(); await DB.put('cases', c); }
+        resolve(doc);
+      };
+      const onOk = () => cleanup(true);
+      const onClose = () => cleanup(false);
+
+      $('#modalOk').addEventListener('click', onOk);
+      $('#modalCancel').addEventListener('click', onClose);
+      $('#modalClose').addEventListener('click', onClose);
+      back.classList.add('show');
+    });
+  }
+};
+
+/* ═══ মিডিয়া হাব ═══ */
+async function renderMediaHub() {
+  const wrap = $('#mediaHubGrid');
+  if (!wrap) return;
+  const all = await DB.getAll('media');
+  const cases = await DB.getAll('cases');
+
+  // কেস ফিল্টার dropdown
+  const sel = $('#mediaHubCase');
+  if (sel && sel.dataset.filled !== '1') {
+    sel.innerHTML = '<option value="all">সব কেস</option>' +
+      cases.map(c => `<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('');
+    sel.dataset.filled = '1';
+  }
+
+  let list = all;
+  if (State.mediaHubFilter !== 'all') list = list.filter(m => m.type === State.mediaHubFilter);
+  if (State.mediaHubCase !== 'all') list = list.filter(m => m.caseId === State.mediaHubCase);
+  list.sort((a, b) => (b.date || b.createdAt) - (a.date || a.createdAt));
+
+  const cnt = $('#mediaHubCount');
+  if (cnt) cnt.textContent = `${bnNum(list.length)} টি`;
+
+  const empty = $('#mediaHubEmpty');
+  if (!list.length) {
+    wrap.innerHTML = '';
+    empty?.classList.remove('hidden');
+    return;
+  }
+  empty?.classList.add('hidden');
+
+  wrap.innerHTML = list.map(m => {
+    const info = MEDIA_TYPES[m.type] || MEDIA_TYPES.photo;
+    const isPhoto = m.type === 'photo' && m.data;
+    return `<div class="media-tile" data-open-media="${esc(m.id)}">
+      ${isPhoto ? `<img src="${m.data}" alt="">` : `<div class="mt-ico">${info.icon}</div>`}
+      <span class="mt-tag">${info.icon}</span>
+      ${m.duration ? `<span class="mt-badge">${bnNum(Math.floor(m.duration / 60))}:${bnNum(String(m.duration % 60).padStart(2, '0'))}</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ═══ মিডিয়া ভিউয়ার ═══ */
+let _currentViewerMedia = null;
+async function openMediaViewer(mediaId) {
+  const m = await DB.get('media', mediaId);
+  if (!m) return;
+  _currentViewerMedia = m;
+  const info = MEDIA_TYPES[m.type] || MEDIA_TYPES.photo;
+  $('#mediaViewerTitle').textContent = `${info.icon} ${info.label}`;
+  $('#mediaViewerCaption').value = m.caption || '';
+
+  const body = $('#mediaViewerBody');
+  if (m.type === 'photo') {
+    body.innerHTML = `<img src="${m.data}" style="max-width:100%;max-height:70vh;object-fit:contain;">`;
+  } else if (m.type === 'audio') {
+    body.innerHTML = `<audio controls src="${m.data}" style="width:100%;padding:20px;"></audio>`;
+  } else if (m.type === 'video') {
+    body.innerHTML = `<video controls src="${m.data}" style="max-width:100%;max-height:70vh;"></video>`;
+  }
+  $('#mediaViewerBackdrop').classList.add('show');
+}
+
+function bindMediaViewer() {
+  $('#mediaViewerClose')?.addEventListener('click', () => {
+    $('#mediaViewerBackdrop').classList.remove('show');
+    $('#mediaViewerBody').innerHTML = '';
+    _currentViewerMedia = null;
+  });
+  $('#mediaViewerSaveCaption')?.addEventListener('click', async () => {
+    if (!_currentViewerMedia) return;
+    _currentViewerMedia.caption = $('#mediaViewerCaption').value.trim();
+    await DB.put('media', _currentViewerMedia);
+    toast('ক্যাপশন সেভ', 'success');
+  });
+  $('#mediaViewerDownload')?.addEventListener('click', () => {
+    if (!_currentViewerMedia) return;
+    const blob = dataURLtoBlob(_currentViewerMedia.data);
+    const ext = _currentViewerMedia.type === 'photo' ? 'jpg'
+              : _currentViewerMedia.type === 'audio' ? 'webm' : 'webm';
+    downloadBlob(blob, `thirdeye_${_currentViewerMedia.id}.${ext}`);
+  });
+  $('#mediaViewerDelete')?.addEventListener('click', async () => {
+    if (!_currentViewerMedia) return;
+    const ok = await confirmDialog('মিডিয়া মুছবেন?', 'ফেরানো যাবে না।');
+    if (!ok) return;
+    await DB.delete('media', _currentViewerMedia.id);
+    toast('মুছে ফেলা হয়েছে', 'success');
+    $('#mediaViewerBackdrop').classList.remove('show');
+    $('#mediaViewerBody').innerHTML = '';
+    _currentViewerMedia = null;
+    if (State.view === 'media') renderMediaHub();
+    if (State.view === 'caseDetail') { await refreshCaseDetail(); await renderCaseMedia(); }
+  });
+}
+
+/* ═══ কেস ডিটেইলের মিডিয়া ট্যাব ═══ */
+async function renderCaseMedia() {
+  const wrap = $('#cdMediaGrid');
+  if (!wrap || !State.caseId) return;
+  const all = await DB.getByIndex('media', 'caseId', State.caseId);
+  let list = all;
+  const activeChip = $('#cdMediaTypeChips .chip.active');
+  const ftype = activeChip?.dataset.mtype || 'all';
+  if (ftype !== 'all') list = list.filter(m => m.type === ftype);
+  list.sort((a, b) => (b.date || b.createdAt) - (a.date || a.createdAt));
+
+  if (!list.length) {
+    wrap.innerHTML = `<div class="empty" style="grid-column:1/-1;padding:24px;">
+      <div class="em-ico">🎬</div>
+      <div class="em-sub">কোনো মিডিয়া নেই</div></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(m => {
+    const info = MEDIA_TYPES[m.type] || MEDIA_TYPES.photo;
+    const isPhoto = m.type === 'photo' && m.data;
+    return `<div class="media-tile" data-open-media="${esc(m.id)}">
+      ${isPhoto ? `<img src="${m.data}" alt="">` : `<div class="mt-ico">${info.icon}</div>`}
+      <span class="mt-tag">${info.icon}</span>
+    </div>`;
+  }).join('');
+}
+
+function bindMediaEvents() {
+  $$('#mediaHubType .chip').forEach(ch => ch.addEventListener('click', () => {
+    $$('#mediaHubType .chip').forEach(c => c.classList.remove('active'));
+    ch.classList.add('active');
+    State.mediaHubFilter = ch.dataset.mhubtype;
+    renderMediaHub();
+  }));
+  $('#mediaHubCase')?.addEventListener('change', (ev) => {
+    State.mediaHubCase = ev.target.value;
+    renderMediaHub();
+  });
+  $$('#cdMediaTypeChips .chip').forEach(ch => ch.addEventListener('click', () => {
+    $$('#cdMediaTypeChips .chip').forEach(c => c.classList.remove('active'));
+    ch.classList.add('active');
+    renderCaseMedia();
+  }));
+  document.addEventListener('click', (ev) => {
+    const tile = ev.target.closest('[data-open-media]');
+    if (tile) openMediaViewer(tile.dataset.openMedia);
+  });
+  $$('[data-mediaAdd]').forEach(btn => btn.addEventListener('click', () => {
+    const t = btn.dataset.mediaAdd;
+    if (t === 'photo') Camera.open('photo');
+    else if (t === 'audio') Recorder.start();
+    else if (t === 'video') Camera.open('video');
+  }));
+  $$('[data-quickmedia]').forEach(btn => btn.addEventListener('click', () => {
+    const t = btn.dataset.quickmedia;
+    if (t === 'photo') Camera.open('photo');
+    else if (t === 'audio') Recorder.start();
+    else if (t === 'video') Camera.open('video');
+  }));
+}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — রিপোর্ট বিল্ডার + অটো-ড্রাফট
+   ═══════════════════════════════════════════════ */
+
+async function loadReport() {
+  if (!State.caseId) return;
+  const reports = await DB.getByIndex('reports', 'caseId', State.caseId);
+  if (reports.length) {
+    reports.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    State.currentReport = reports[0];
+  } else {
+    State.currentReport = null;
+  }
+  renderReport();
+}
+
+function renderReport() {
+  const r = State.currentReport;
+  const metaWrap = $('#cdReportMeta');
+  const secWrap = $('#cdReportSections');
+  const saveBtn = $('#cdSaveReportBtn');
+  const exportBtn = $('#cdExportReportBtn');
+  const tools = $('#cdReportTools');
+
+  if (!r) {
+    metaWrap?.classList.add('hidden');
+    secWrap.innerHTML = '';
+    saveBtn?.classList.add('hidden');
+    exportBtn?.classList.add('hidden');
+    tools?.classList.add('hidden');
+    return;
+  }
+  metaWrap?.classList.remove('hidden');
+  saveBtn?.classList.remove('hidden');
+  exportBtn?.classList.remove('hidden');
+  tools?.classList.remove('hidden');
+
+  metaWrap.innerHTML = `
+    <div class="report-meta">
+      <div class="rm-row"><span class="rm-key">হেডলাইন</span><span class="rm-val">${esc(r.headline || '—')}</span></div>
+      <div class="rm-row"><span class="rm-key">বাইলাইন</span><span class="rm-val">${esc(r.byline || '—')}</span></div>
+      <div class="rm-row"><span class="rm-key">তারিখ</span><span class="rm-val">${formatDate(r.updatedAt)}</span></div>
+      <div class="rm-row"><span class="rm-key">শব্দ সংখ্যা</span><span class="rm-val">${bnNum(countWords(r))}</span></div>
+      <div class="rm-row"><span class="rm-key">উদ্ধৃতি</span><span class="rm-val">${bnNum((r.quoteCount || 0))}</span></div>
+    </div>`;
+
+  secWrap.innerHTML = (r.sections || []).map((s, i) => reportSectionHTML(s, i)).join('');
+
+  // contenteditable বাইন্ড
+  $$('#cdReportSections .rs-body').forEach(el => {
+    el.addEventListener('blur', () => {
+      const idx = +el.dataset.idx;
+      if (State.currentReport.sections[idx]) {
+        State.currentReport.sections[idx].body = el.innerHTML;
+      }
+    });
+  });
+}
+
+function reportSectionHTML(s, i) {
+  return `<div class="report-section" draggable="true" data-rs-idx="${i}">
+    <div class="rs-head">
+      <span class="rs-num">${bnNum(i + 1)}</span>
+      <span class="rs-title">${esc(s.title || 'সেকশন')}</span>
+      <span class="rs-handle">☰</span>
+    </div>
+    <div class="rs-body" contenteditable="true" data-idx="${i}">${s.body || ''}</div>
+    <div class="rs-tools">
+      <button class="rs-tool" data-rs-up="${i}" type="button">▲ উপরে</button>
+      <button class="rs-tool" data-rs-down="${i}" type="button">▼ নিচে</button>
+      <button class="rs-tool" data-rs-edit="${i}" type="button">✏️ শিরোনাম</button>
+      <button class="rs-tool danger" data-rs-del="${i}" type="button">✕ মুছুন</button>
+    </div>
+  </div>`;
+}
+
+function countWords(r) {
+  if (!r?.sections) return 0;
+  let n = 0;
+  r.sections.forEach(s => {
+    const text = (s.body || '').replace(/<[^>]+>/g, ' ').trim();
+    if (text) n += text.split(/\s+/).length;
+  });
+  return n;
+}
+
+/* ═══ অটো-ড্রাফট ═══ */
+async function generateAutoDraft() {
+  if (!State.caseId) return;
+  const c = State.caseData;
+  const entries = await DB.getByIndex('entries', 'caseId', State.caseId);
+  const entities = await DB.getByIndex('entities', 'caseId', State.caseId);
+
+  if (!entries.length) { toast('অন্তত একটি এন্ট্রি দরকার', 'warn'); return; }
+
+  const interviews = entries.filter(e => e.type === 'interview');
+  const quotes = entries.filter(e => e.type === 'quote');
+  const stats = entries.filter(e => e.type === 'stat');
+  const docs = entries.filter(e => e.type === 'document');
+  const events = entries.filter(e => e.type === 'event');
+  const notes = entries.filter(e => e.type === 'note');
+
+  const dateStr = formatDate(Date.now());
+
+  const headline = `${c.title || 'অনুসন্ধান'}`;
+  const lead = c.description || `এই অনুসন্ধানে ${bnNum(entries.length)} টি এন্ট্রি যুক্ত হয়েছে${entities.length ? ` এবং ${bnNum(entities.length)} টি Entity চিহ্নিত` : ''}।`;
+
+  const sceneParts = events.length
+    ? events.slice(0, 2).map(e => `📌 ${e.title} — ${formatDate(e.date)}`)
+    : ['দৃশ্যটি প্রত্যক্ষদর্শীদের ভাষায় ফুটে উঠেছে।'];
+
+  const factsParts = stats.length
+    ? stats.flatMap(s => (s.numbers || []).map(n => `<b>${esc(n.label)}:</b> ${esc(n.value)}`))
+    : docs.map(d => `📄 ${d.title}${d.docType ? ` (${d.docType})` : ''}`);
+
+  const quoteParts = interviews.slice(0, 3).map(i =>
+    `"<i>${esc(i.notes || i.title)}</i>"<br>— ${esc(i.interviewee || 'অজানা')}`
+  ).concat(quotes.slice(0, 2).map(q => `"<i>${esc(q.quote)}</i>"<br>— ${esc(q.quoteWho || 'অজানা')}`));
+
+  const storyParts = notes.slice(0, 3).map(n => `• ${esc(n.title)} — ${formatDate(n.date)}`);
+
+  const sections = [
+    { key: 'headline',   title: '১. হেডলাইন',           body: `<h2 style="font-size:22px;font-weight:700;line-height:1.3;color:var(--ink);">${esc(headline)}</h2>` },
+    { key: 'lead',       title: '২. লিড',               body: `<p>${esc(lead)}</p>` },
+    { key: 'scene',      title: '৩. নাটকীয় দৃশ্য',      body: sceneParts.map(p => `<p>${p}</p>`).join('') },
+    { key: 'facts',      title: '৪. মূল তথ্য + সংখ্যা',  body: factsParts.length ? '<ul>' + factsParts.map(f => `<li>${f}</li>`).join('') + '</ul>' : '<p>সংখ্যা সংযোজন করুন।</p>' },
+    { key: 'quotes',     title: '৫. সাক্ষাৎকারের উদ্ধৃতি', body: quoteParts.length ? quoteParts.map(q => `<blockquote style="border-left:3px solid var(--gold);padding:8px 12px;margin:8px 0;color:var(--ink2);">${q}</blockquote>`).join('') : '<p>উদ্ধৃতি যোগ করুন।</p>' },
+    { key: 'story',      title: '৬. মানবিক গল্প',        body: storyParts.map(p => `<p>${p}</p>`).join('') || '<p>—</p>' },
+    { key: 'response',   title: '৭. পক্ষের বক্তব্য',      body: '<p>সম্পৃক্ত পক্ষের মন্তব্য যোগ করুন।</p>' },
+    { key: 'context',    title: '৮. প্রেক্ষাপট',           body: '<p>ঘটনার ইতিহাস ও পটভূমি লিখুন।</p>' },
+    { key: 'recommend',  title: '৯. সুপারিশ',              body: '<p>সমাধানের সুপারিশ দিন।</p>' },
+    { key: 'conclusion', title: '১০. উপসংহার',             body: '<p>সারসংক্ষেপে শেষ করুন।</p>' }
+  ];
+
+  const report = {
+    id: uid('rep'),
+    caseId: State.caseId,
+    headline: c.title || '',
+    byline: '',
+    status: 'draft',
+    sections,
+    quoteCount: quoteParts.length,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+
+  await DB.put('reports', report);
+  State.currentReport = report;
+  renderReport();
+  toast('✨ অটো-ড্রাফট তৈরি', 'success');
+}
+
+/* ═══ ম্যানুয়াল রিপোর্ট ═══ */
+async function createManualReport() {
+  const sections = REPORT_SECTIONS.map(s => ({ key: s.key, title: s.title, body: '' }));
+  const report = {
+    id: uid('rep'),
+    caseId: State.caseId,
+    headline: State.caseData?.title || '',
+    byline: '',
+    status: 'draft',
+    sections,
+    quoteCount: 0,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+  await DB.put('reports', report);
+  State.currentReport = report;
+  renderReport();
+  toast('নতুন রিপোর্ট', 'success');
+}
+
+/* ═══ সেভ ═══ */
+async function saveReport() {
+  if (!State.currentReport) return;
+  // সব contenteditable থেকে সিঙ্ক
+  $$('#cdReportSections .rs-body').forEach(el => {
+    const i = +el.dataset.idx;
+    if (State.currentReport.sections[i]) State.currentReport.sections[i].body = el.innerHTML;
+  });
+  State.currentReport.updatedAt = Date.now();
+  State.currentReport.quoteCount = countQuoteBlocks(State.currentReport);
+  await DB.put('reports', State.currentReport);
+  toast('💾 রিপোর্ট সেভ', 'success');
+}
+
+function countQuoteBlocks(r) {
+  let n = 0;
+  r.sections.forEach(s => {
+    const matches = (s.body || '').match(/<blockquote/gi);
+    if (matches) n += matches.length;
+  });
+  return n;
+}
+
+/* ═══ সেকশন আপ/ডাউন/ডিলিট ═══ */
+function moveSection(idx, dir) {
+  const r = State.currentReport;
+  if (!r) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= r.sections.length) return;
+  const [s] = r.sections.splice(idx, 1);
+  r.sections.splice(newIdx, 0, s);
+  renderReport();
+}
+function deleteSection(idx) {
+  const r = State.currentReport;
+  if (!r) return;
+  r.sections.splice(idx, 1);
+  renderReport();
+}
+function renameSection(idx) {
+  const r = State.currentReport;
+  if (!r) return;
+  const old = r.sections[idx].title;
+  const nv = prompt('নতুন শিরোনাম:', old);
+  if (nv && nv.trim()) { r.sections[idx].title = nv.trim(); renderReport(); }
+}
+
+/* ═══ ড্র্যাগ-অ্যান্ড-ড্রপ ═══ */
+let _dragIdx = null;
+function bindReportDnD() {
+  const wrap = $('#cdReportSections');
+  if (!wrap) return;
+  wrap.addEventListener('dragstart', (ev) => {
+    const sec = ev.target.closest('.report-section');
+    if (!sec) return;
+    _dragIdx = +sec.dataset.rsIdx;
+    sec.classList.add('dragging');
+  });
+  wrap.addEventListener('dragend', (ev) => {
+    $$('.report-section').forEach(s => s.classList.remove('dragging', 'drop-target'));
+    _dragIdx = null;
+  });
+  wrap.addEventListener('dragover', (ev) => {
+    ev.preventDefault();
+    const sec = ev.target.closest('.report-section');
+    if (!sec) return;
+    $$('.report-section').forEach(s => s.classList.remove('drop-target'));
+    sec.classList.add('drop-target');
+  });
+  wrap.addEventListener('drop', (ev) => {
+    ev.preventDefault();
+    const sec = ev.target.closest('.report-section');
+    if (!sec || _dragIdx == null) return;
+    const toIdx = +sec.dataset.rsIdx;
+    if (toIdx === _dragIdx) return;
+    const r = State.currentReport;
+    const [s] = r.sections.splice(_dragIdx, 1);
+    r.sections.splice(toIdx, 0, s);
+    renderReport();
+  });
+}
+
+/* ═══ এক্সপোর্ট ═══ */
+function exportReportPDF() { window.print(); }
+
+function exportReportHTML() {
+  const r = State.currentReport;
+  if (!r) return;
+  const html = `<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8">
+    <title>${esc(r.headline || 'রিপোর্ট')}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
+    <style>body{font-family:'Noto Sans Bengali',serif;max-width:720px;margin:40px auto;padding:20px;line-height:1.7;color:#0d1421;}
+      h1{font-size:26px;margin-bottom:8px;} .meta{color:#6b7583;font-size:13px;margin-bottom:24px;}
+      section{margin-bottom:28px;} h2{font-size:17px;border-bottom:1px solid #e4e8ef;padding-bottom:6px;color:#0a1f3d;}
+      blockquote{border-left:3px solid #d4a843;padding:8px 14px;margin:10px 0;color:#3d4655;background:#faf3e0;border-radius:6px;}
+    </style></head><body>
+    <h1>${esc(r.headline || 'শিরোনামহীন')}</h1>
+    <div class="meta">${esc(r.byline || '')} • ${formatDate(r.updatedAt)} • ${bnNum(countWords(r))} শব্দ</div>
+    ${r.sections.map(s => `<section><h2>${esc(s.title)}</h2>${s.body || ''}</section>`).join('')}
+    </body></html>`;
+  downloadText(html, `report-${Date.now()}.html`, 'text/html');
+}
+
+function exportReportTXT() {
+  const r = State.currentReport;
+  if (!r) return;
+  let txt = `${r.headline || ''}\n${r.byline || ''}\n${formatDate(r.updatedAt)}\n\n`;
+  r.sections.forEach(s => {
+    txt += `\n━━━━ ${s.title} ━━━━\n`;
+    txt += (s.body || '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ') + '\n';
+  });
+  downloadText(txt, `report-${Date.now()}.txt`);
+}
+
+async function exportReportCopy() {
+  const r = State.currentReport;
+  if (!r) return;
+  let txt = `${r.headline || ''}\n\n`;
+  r.sections.forEach(s => {
+    txt += `${s.title}\n${(s.body || '').replace(/<[^>]+>/g, '')}\n\n`;
+  });
+  try {
+    await navigator.clipboard.writeText(txt);
+    toast('📋 কপি হয়েছে', 'success');
+  } catch (_) {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); ta.remove();
+    toast('📋 কপি হয়েছে', 'success');
+  }
+}
+
+function bindReportEvents() {
+  $('#cdAutoDraftBtn')?.addEventListener('click', generateAutoDraft);
+  $('#cdManualDraftBtn')?.addEventListener('click', createManualReport);
+  $('#cdSaveReportBtn')?.addEventListener('click', saveReport);
+  $$('[data-export]').forEach(btn => btn.addEventListener('click', () => {
+    const t = btn.dataset.export;
+    if (t === 'pdf') exportReportPDF();
+    else if (t === 'html') exportReportHTML();
+    else if (t === 'txt') exportReportTXT();
+    else if (t === 'copy') exportReportCopy();
+  }));
+  $('#cdReportSections')?.addEventListener('click', (ev) => {
+    const up = ev.target.closest('[data-rs-up]');
+    const dn = ev.target.closest('[data-rs-down]');
+    const del = ev.target.closest('[data-rs-del]');
+    const ed = ev.target.closest('[data-rs-edit]');
+    if (up) moveSection(+up.dataset.rsUp, -1);
+    if (dn) moveSection(+dn.dataset.rsDown, 1);
+    if (del) deleteSection(+del.dataset.rsDel);
+    if (ed) renameSection(+ed.dataset.rsEdit);
+  });
+  bindReportDnD();
+}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — ব্যাকআপ, PIN, ইনিশিয়ালাইজ
+   ═══════════════════════════════════════════════ */
+
+/* ═══ AES-GCM 256 এনক্রিপশন ═══ */
+async function deriveKey(password, salt) {
+  const enc = new TextEncoder();
+  const baseKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptJSON(obj, password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(password, salt);
+  const data = new TextEncoder().encode(JSON.stringify(obj));
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+  return {
+    v: 1, alg: 'AES-GCM-256',
+    salt: btoa(String.fromCharCode(...salt)),
+    iv: btoa(String.fromCharCode(...iv)),
+    ct: btoa(String.fromCharCode(...new Uint8Array(ct)))
+  };
+}
+
+async function decryptJSON(payload, password) {
+  const salt = Uint8Array.from(atob(payload.salt), c => c.charCodeAt(0));
+  const iv = Uint8Array.from(atob(payload.iv), c => c.charCodeAt(0));
+  const ct = Uint8Array.from(atob(payload.ct), c => c.charCodeAt(0));
+  const key = await deriveKey(password, salt);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+/* ═══ সম্পূর্ণ ব্যাকআপ ═══ */
+async function createBackup() {
+  const useEnc = await confirmDialog('এনক্রিপ্ট করবেন?', 'AES-256 এনক্রিপশনের জন্য পাসওয়ার্ড দিতে হবে। না বললে সাধারণ JSON।');
+  let password = null;
+  if (useEnc) {
+    password = prompt('পাসওয়ার্ড দিন (মনে রাখুন!):');
+    if (!password) { toast('বাতিল', 'warn'); return; }
+  }
+
+  toast('ব্যাকআপ তৈরি হচ্ছে...', '');
+  const dump = await DB.exportAll();
+
+  const filename = `thirdeye-backup-${new Date().toISOString().slice(0, 10)}.json`;
+
+  if (useEnc) {
+    const enc = await encryptJSON(dump, password);
+    downloadText(JSON.stringify(enc), filename, 'application/json');
+  } else {
+    downloadText(JSON.stringify(dump, null, 2), filename, 'application/json');
+  }
+  toast('✅ ব্যাকআপ ডাউনলোড হয়েছে', 'success');
+}
+
+/* ═══ রিস্টোর ═══ */
+function restoreBackup() {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json,application/json';
+  inp.onchange = async () => {
+    const file = inp.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      let payload = JSON.parse(text);
+      if (payload.ct && payload.salt && payload.iv) {
+        const pw = prompt('পাসওয়ার্ড দিন:');
+        if (!pw) return;
+        try { payload = await decryptJSON(payload, pw); }
+        catch (_) { toast('ভুল পাসওয়ার্ড', 'error'); return; }
+      }
+      const ok = await confirmDialog('মার্জ করবেন?', 'ডুপ্লিকেট বাদ দিয়ে নতুন ডেটা যোগ হবে।');
+      if (!ok) return;
+      const res = await DB.importMerge(payload);
+      toast(`✅ ${bnNum(res.added)} যোগ, ${bnNum(res.skipped)} বাদ`, 'success');
+      renderHome();
+    } catch (err) {
+      console.error(err);
+      toast('ফাইল পড়তে সমস্যা', 'error');
+    }
+  };
+  inp.click();
+}
+
+/* ═══ CSV এক্সপোর্ট ═══ */
+async function exportCasesCSV() {
+  const cases = await DB.getAll('cases');
+  const rows = cases.map(c => ({
+    id: c.id, title: c.title || '', description: c.description || '',
+    status: CASE_STATUS[c.status]?.label || c.status,
+    tags: (c.tags || []).join(';'),
+    created: formatDate(c.createdAt), updated: formatDate(c.updatedAt)
+  }));
+  const csv = toCSV(rows, [
+    { label: 'ID', get: r => r.id },
+    { label: 'নাম', get: r => r.title },
+    { label: 'বিবরণ', get: r => r.description },
+    { label: 'স্ট্যাটাস', get: r => r.status },
+    { label: 'ট্যাগ', get: r => r.tags },
+    { label: 'তৈরি', get: r => r.created },
+    { label: 'আপডেট', get: r => r.updated }
+  ]);
+  downloadText('\uFEFF' + csv, `cases-${Date.now()}.csv`, 'text/csv');
+  toast('CSV ডাউনলোড', 'success');
+}
+
+async function exportEntriesCSV() {
+  const entries = await DB.getAll('entries');
+  const cases = await DB.getAll('cases');
+  const caseMap = {}; cases.forEach(c => caseMap[c.id] = c.title);
+  const rows = entries.map(e => ({
+    id: e.id, title: e.title || '',
+    type: ENTRY_TYPES[e.type]?.label || e.type,
+    case: caseMap[e.caseId] || '',
+    date: formatDate(e.date), notes: e.notes || ''
+  }));
+  const csv = toCSV(rows, [
+    { label: 'ID', get: r => r.id },
+    { label: 'শিরোনাম', get: r => r.title },
+    { label: 'ধরন', get: r => r.type },
+    { label: 'কেস', get: r => r.case },
+    { label: 'তারিখ', get: r => r.date },
+    { label: 'টীকা', get: r => r.notes }
+  ]);
+  downloadText('\uFEFF' + csv, `entries-${Date.now()}.csv`, 'text/csv');
+  toast('CSV ডাউনলোড', 'success');
+}
+
+async function exportPlainJSON() {
+  const dump = await DB.exportAll();
+  // মিডিয়া base64 বাদ
+  if (dump.data.media) {
+    dump.data.media = dump.data.media.map(m => {
+      const { data, ...rest } = m;
+      return { ...rest, dataOmitted: true };
+    });
+  }
+  downloadText(JSON.stringify(dump, null, 2), `thirdeye-data-${Date.now()}.json`, 'application/json');
+  toast('JSON ডাউনলোড', 'success');
+}
+
+/* ═══ PIN লক ═══ */
+async function setPin() {
+  const existing = await DB.getSetting('pinHash', null);
+  const action = existing ? 'পরিবর্তন' : 'সেট';
+  const pin = prompt(`${action} করতে ৪-ডিজিট PIN দিন:`);
+  if (!pin || !/^\d{4}$/.test(pin)) { toast('৪ ডিজিটের সংখ্যা দিন', 'warn'); return; }
+  const confirmPin = prompt('আবার দিন:');
+  if (pin !== confirmPin) { toast('মিলছে না', 'error'); return; }
+  const hash = await hashSimple(pin);
+  await DB.setSetting('pinHash', hash);
+  toast('✅ PIN সেট হয়েছে', 'success');
+  renderMore();
+}
+
+async function removePin() {
+  const pin = prompt('বর্তমান PIN দিন:');
+  if (!pin) return;
+  const hash = await hashSimple(pin);
+  const stored = await DB.getSetting('pinHash', null);
+  if (hash !== stored) { toast('ভুল PIN', 'error'); return; }
+  await DB.delSetting('pinHash');
+  toast('PIN মুছে ফেলা হয়েছে', 'success');
+  renderMore();
+}
+
+async function checkPinLock() {
+  const hash = await DB.getSetting('pinHash', null);
+  if (!hash) { State.unlocked = true; return; }
+  State.pinHash = hash;
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),var(--navy2));z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:20px;`;
+    overlay.innerHTML = `
+      <div style="font-size:56px;margin-bottom:8px;">👁️</div>
+      <div style="font-size:22px;font-weight:700;margin-bottom:4px;">Third Eye</div>
+      <div style="font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:30px;">by Meghulo</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.75);margin-bottom:14px;">PIN দিন</div>
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="4" autocomplete="off"
+        style="width:200px;text-align:center;font-size:28px;letter-spacing:14px;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;outline:none;">
+      <button id="pinOkBtn" style="margin-top:16px;padding:12px 32px;background:var(--gold);color:var(--navy);border-radius:10px;font-weight:700;">আনলক</button>
+      <div id="pinErr" style="margin-top:14px;color:#ff8888;font-size:13px;height:16px;"></div>`;
+    document.body.appendChild(overlay);
+
+    const tryUnlock = async () => {
+      const pin = document.getElementById('pinInput').value;
+      const h = await hashSimple(pin);
+      if (h === State.pinHash) {
+        State.unlocked = true;
+        overlay.remove();
+        resolve();
+      } else {
+        document.getElementById('pinErr').textContent = 'ভুল PIN';
+        document.getElementById('pinInput').value = '';
+      }
+    };
+    document.getElementById('pinOkBtn').addEventListener('click', tryUnlock);
+    document.getElementById('pinInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') tryUnlock();
+    });
+    setTimeout(() => document.getElementById('pinInput')?.focus(), 100);
+  });
+}
+
+/* ═══ সব ডেটা রিসেট ═══ */
+async function resetAll() {
+  const ok1 = await confirmDialog('সব ডেটা মুছবেন?', 'সব কেস, এন্ট্রি, মিডিয়া, রিপোর্ট মুছে যাবে।');
+  if (!ok1) return;
+  const ok2 = await confirmDialog('একেবারে নিশ্চিত?', 'এই কাজ ফেরানো যাবে না।');
+  if (!ok2) return;
+  await DB.clearAll();
+  toast('সব ডেটা মুছে ফেলা হয়েছে', 'success');
+  State.caseId = null; State.caseData = null; State.currentReport = null;
+  navigateTo('home');
+}
+
+/* ═══ ইনস্টল প্রম্পট ═══ */
+function setupInstall() {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    State.deferredPrompt = e;
+    $('#installBtn')?.classList.add('show');
+  });
+  $('#installBtn')?.addEventListener('click', async () => {
+    if (!State.deferredPrompt) { toast('ইনস্টল অপশন নেই', 'warn'); return; }
+    State.deferredPrompt.prompt();
+    const { outcome } = await State.deferredPrompt.userChoice;
+    if (outcome === 'accepted') toast('✅ ইনস্টল হয়েছে', 'success');
+    State.deferredPrompt = null;
+    $('#installBtn')?.classList.remove('show');
+  });
+  $('#moreInstallBtn')?.addEventListener('click', () => $('#installBtn')?.click());
+  window.addEventListener('appinstalled', () => {
+    toast('✅ অ্যাপ ইনস্টল হয়েছে', 'success');
+    $('#installBtn')?.classList.remove('show');
+  });
+}
+
+/* ═══ অফলাইন ইন্ডিকেটর ═══ */
+function setupOffline() {
+  const bar = $('#offlineBar');
+  const update = () => bar?.classList.toggle('show', !navigator.onLine);
+  window.addEventListener('online', update);
+  window.addEventListener('offline', update);
+  update();
+}
+
+/* ═══ আরও (সেটিংস) — বাইন্ডিং ═══ */
+function bindMoreEvents() {
+  $('#morePinBtn')?.addEventListener('click', () => {
+    DB.getSetting('pinHash', null).then(h => h ? removePin() : setPin());
+  });
+  $('#moreBackupBtn')?.addEventListener('click', createBackup);
+  $('#moreRestoreBtn')?.addEventListener('click', restoreBackup);
+  $('#moreExportCasesCsv')?.addEventListener('click', exportCasesCSV);
+  $('#moreExportEntriesCsv')?.addEventListener('click', exportEntriesCSV);
+  $('#moreExportJson')?.addEventListener('click', exportPlainJSON);
+  $('#moreResetBtn')?.addEventListener('click', resetAll);
+  $('#moreStorageBtn')?.addEventListener('click', async () => {
+    if (navigator.storage?.estimate) {
+      const est = await navigator.storage.estimate();
+      const used = (est.usage / 1024 / 1024).toFixed(2);
+      toast(`ব্যবহার: ${bnNum(used)} MB / ${bnNum((est.quota / 1024 / 1024 / 1024).toFixed(1))} GB`, 'info', 3500);
+    } else {
+      toast('স্টোরেজ তথ্য নেই', 'warn');
+    }
+  });
+}
+
+/* ═══ কেস লিস্ট ইভেন্ট ═══ */
+function bindCaseListEvents() {
+  $('#caseSearch')?.addEventListener('input', debounce((ev) => {
+    State.caseQuery = ev.target.value.trim();
+    renderCaseList();
+  }, 250));
+  $$('#caseStatusChips .chip').forEach(ch => ch.addEventListener('click', () => {
+    $$('#caseStatusChips .chip').forEach(c => c.classList.remove('active'));
+    ch.classList.add('active');
+    State.caseFilter = ch.dataset.status;
+    renderCaseList();
+  }));
+  $('#caseSort')?.addEventListener('change', (ev) => {
+    State.caseSort = ev.target.value;
+    renderCaseList();
+  });
+  $('#caseListContainer')?.addEventListener('click', (ev) => {
+    const card = ev.target.closest('[data-open-case]');
+    if (card) openCase(card.dataset.openCase);
+  });
+}
+
+/* ═══ কেস ডিটেইল ইভেন্ট ═══ */
+function bindCaseDetailEvents() {
+  $('#cdBackBtn')?.addEventListener('click', () => navigateTo('cases'));
+  $('#cdEditBtn')?.addEventListener('click', () => openCaseForm(State.caseData));
+  $('#cdMoreBtn')?.addEventListener('click', async () => {
+    const action = await new Promise(resolve => {
+      const back = $('#modalBackdrop');
+      $('#modalTitle').textContent = 'কেস অপশন';
+      $('#modalBody').innerHTML = `
+        <button class="btn btn-ghost btn-block mb-12" id="caseOptEntity">👥 Entity ম্যানেজার</button>
+        <button class="btn btn-ghost btn-block mb-12" id="caseOptBackup">📤 কেস JSON ডাউনলোড</button>
+        <button class="btn btn-danger btn-block" id="caseOptDelete">🗑️ কেস মুছুন</button>`;
+      $('#modalFoot').style.display = 'none';
+      const close = (v) => {
+        back.classList.remove('show');
+        $('#modalFoot').style.display = '';
+        resolve(v);
+      };
+      $('#caseOptEntity')?.addEventListener('click', () => close('entity'));
+      $('#caseOptBackup')?.addEventListener('click', () => close('backup'));
+      $('#caseOptDelete')?.addEventListener('click', () => close('delete'));
+      $('#modalClose')?.addEventListener('click', () => close(null));
+      back.classList.add('show');
+    });
+    if (action === 'entity') openEntityManager();
+    else if (action === 'backup') {
+      const all = await DB.exportAll();
+      downloadText(JSON.stringify(all, null, 2), `case-${State.caseId}.json`, 'application/json');
+      toast('ডাউনলোড', 'success');
+    } else if (action === 'delete') {
+      await deleteCase(State.caseId);
+    }
+  });
+
+  $$('#cdTabs .chip').forEach(ch => ch.addEventListener('click', async () => {
+    const tab = ch.dataset.cdtab;
+    $$('#cdTabs .chip').forEach(c => c.classList.remove('active'));
+    ch.classList.add('active');
+    $$('.cd-tab-panel').forEach(p => p.classList.toggle('hidden', p.dataset.cdpanel !== tab));
+    State.caseTab = tab;
+    if (tab === 'entries') await renderCaseEntries();
+    if (tab === 'media') await renderCaseMedia();
+    if (tab === 'timeline') await renderCaseTimeline();
+    if (tab === 'report') await loadReport();
+  }));
+
+  $$('[data-entgoto]').forEach(btn => btn.addEventListener('click', () => {
+    openEntityManager().then(() => {
+      const tab = btn.dataset.entgoto;
+      $$('#entTabs .chip').forEach(c => c.classList.toggle('active', c.dataset.enttab === tab));
+      renderEntityList();
+    });
+  }));
+
+  // কেস ডিটেইল: এন্ট্রি/মিডিয়া ওপেন হ্যান্ডল
+  $('#cdEntryList')?.addEventListener('click', (ev) => {
+    const item = ev.target.closest('[data-open-entry]');
+    if (item) openEntryDetail(item.dataset.openEntry);
+  });
+}
+
+/* ═══ টাইমলাইন ═══ */
+async function renderCaseTimeline() {
+  const wrap = $('#cdTimeline');
+  if (!wrap) return;
+  const [entries, media] = await Promise.all([
+    DB.getByIndex('entries', 'caseId', State.caseId),
+    DB.getByIndex('media', 'caseId', State.caseId)
+  ]);
+
+  const items = [];
+  entries.forEach(e => items.push({
+    date: e.date || e.createdAt,
+    icon: ENTRY_TYPES[e.type]?.icon || '📝',
+    title: e.title || '—',
+    sub: ENTRY_TYPES[e.type]?.label || '',
+    id: e.id, kind: 'entry'
+  }));
+  media.forEach(m => items.push({
+    date: m.date || m.createdAt,
+    icon: MEDIA_TYPES[m.type]?.icon || '🎬',
+    title: m.caption || MEDIA_TYPES[m.type]?.label || 'মিডিয়া',
+    sub: MEDIA_TYPES[m.type]?.label || '',
+    id: m.id, kind: 'media'
+  }));
+
+  items.sort((a, b) => b.date - a.date);
+
+  if (!items.length) {
+    wrap.innerHTML = `<div class="empty"><div class="em-ico">🕐</div>
+      <div class="em-title">টাইমলাইন খালি</div>
+      <div class="em-sub">এন্ট্রি বা মিডিয়া যোগ করলে এখানে দেখা যাবে</div></div>`;
+    return;
+  }
+
+  // মাস অনুযায়ী গ্রুপ
+  const groups = {};
+  items.forEach(it => {
+    const d = new Date(it.date);
+    const key = `${BN_MONTHS[d.getMonth()]} ${bnNum(d.getFullYear())}`;
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(it);
+  });
+
+  wrap.innerHTML = Object.entries(groups).map(([month, arr]) => `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--gold-dark);margin-bottom:8px;padding-left:2px;">${month}</div>
+      <div class="timeline">
+        ${arr.map(it => `
+          <div class="tl-item" data-open-${it.kind}="${esc(it.id)}" style="cursor:pointer;">
+            <div class="tl-date">${formatDate(it.date)} ${it.icon}</div>
+            <div class="tl-title">${esc(it.title)}</div>
+            <div class="tl-sub">${esc(it.sub)}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+/* ═══ হোম / দ্রুত / FAB ইভেন্ট ═══ */
+function bindHomeEvents() {
+  $$('[data-goto]').forEach(el => el.addEventListener('click', () => navigateTo(el.dataset.goto)));
+  $$('[data-quick]').forEach(btn => btn.addEventListener('click', () => {
+    const t = btn.dataset.quick;
+    if (t === 'photo') Camera.open('photo');
+    else if (t === 'audio') Recorder.start();
+    else openEntryForm(null, t);
+  }));
+  $$('[data-newentry]').forEach(btn => btn.addEventListener('click', () => {
+    openEntryForm(null, btn.dataset.newentry);
+  }));
+  $$('[data-quickmedia]').forEach(btn => btn.addEventListener('click', () => {
+    const t = btn.dataset.quickmedia;
+    if (t === 'photo') Camera.open('photo');
+    else if (t === 'audio') Recorder.start();
+    else if (t === 'video') Camera.open('video');
+  }));
+  $('#fabNewEntry')?.addEventListener('click', () => {
+    if (State.view === 'cases' && !State.caseId) openCaseForm();
+    else openEntryForm(null, 'note');
+  });
+  $('#searchBtn')?.addEventListener('click', () => {
+    navigateTo('cases');
+    setTimeout(() => $('#caseSearch')?.focus(), 100);
+  });
+  $('#homeRecentCases')?.addEventListener('click', (ev) => {
+    const card = ev.target.closest('[data-open-case]');
+    if (card) openCase(card.dataset.openCase);
+  });
+  $('#homeTodayEntries')?.addEventListener('click', (ev) => {
+    const item = ev.target.closest('[data-open-entry]');
+    if (item) openEntryDetail(item.dataset.openEntry);
+  });
+  // বটম নেভ
+  $$('#bottomNav .nav-item').forEach(btn => btn.addEventListener('click', () => {
+    navigateTo(btn.dataset.view);
+  }));
+}
+
+/* ═══ কেস ফর্ম ইভেন্ট ═══ */
+function bindCaseFormEvents() {
+  $('#caseFormSave')?.addEventListener('click', saveCaseForm);
+  $('#caseFormCancel')?.addEventListener('click', () => $('#caseFormBackdrop').classList.remove('show'));
+  $('#caseFormClose')?.addEventListener('click', () => $('#caseFormBackdrop').classList.remove('show'));
+}
+
+/* ═══ Service Worker রেজিস্ট্রেশন ═══ */
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('SW ✓', reg.scope))
+        .catch(err => console.warn('SW ✗', err));
+    });
+  }
+}
+
+/* ═══ অ্যাপ ইনিশিয়ালাইজ ═══ */
+async function initApp() {
+  try {
+    await DB.open();
+    console.log('✅ IndexedDB প্রস্তুত');
+
+    // PIN লক (থাকলে)
+    await checkPinLock();
+
+    // সব ইভেন্ট বাইন্ড
+    bindHomeEvents();
+    bindCaseListEvents();
+    bindCaseDetailEvents();
+    bindCaseFormEvents();
+    bindEntityEvents();
+    bindEntryEvents();
+    bindRecorderDrag();
+    bindRecorderButtons();
+    bindMediaEvents();
+    bindMediaViewer();
+    bindReportEvents();
+    bindMoreEvents();
+    setupInstall();
+    setupOffline();
+
+    // হোম দেখান
+    navigateTo('home');
+
+    // সার্ভিস ওয়ার্কার
+    registerSW();
+
+    console.log('👁️ Third Eye চালু হয়েছে');
+  } catch (err) {
+    console.error('initApp:', err);
+    toast('অ্যাপ চালু করতে সমস্যা', 'error');
+  }
+}
+
+/* ═══ ডম প্রস্তুত হলে শুরু ═══ */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
+</script>
+</body>
+</html>
