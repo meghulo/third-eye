@@ -2348,6 +2348,8 @@ function openModal({ title, bodyHTML, okText, cancelText, onOk }) {
   $('#modalBody').innerHTML = bodyHTML || '';
   $('#modalOk').textContent = okText || 'ঠিক আছে';
   $('#modalCancel').textContent = cancelText || 'বাতিল';
+  // modal-foot সবসময় দেখাও (cdMoreBtn এর পর থেকে লুকানো থাকতে পারে)
+  $('#modalFoot').style.display = '';
 
   const close = () => {
     back.classList.remove('show');
@@ -5783,19 +5785,81 @@ async function runAiPolish() {
 
 async function setGeminiKey() {
   const existing = await DB.getSetting('geminiApiKey', null);
-  const msg = existing ? 'বর্তমান key মুছে নতুন দিন (বাতিল করতে খালি রাখুন):' : 'Gemini API key পেস্ট করুন:';
-  const key = prompt(msg, '');
-  if (key === null) return;
-  if (!key.trim()) {
-    await DB.delSetting('geminiApiKey');
-    toast('Key মুছে ফেলা হয়েছে', 'success');
+
+  const bodyHTML = `
+    <div class="form-group">
+      <label for="geminiKeyInput">Gemini API Key</label>
+      <input type="text" class="input" id="geminiKeyInput"
+             placeholder="AIza… বা AQ.Ab8R…"
+             value="${existing ? esc(existing) : ''}"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             style="font-family:monospace;font-size:13px;">
+      <p style="font-size:11.5px;color:var(--ink3);margin-top:8px;line-height:1.6;">
+        🔗 <a href="https://aistudio.google.com/apikey" target="_blank" 
+              style="color:var(--navy);text-decoration:underline;font-weight:600;">
+          aistudio.google.com/apikey
+        </a> → "Create API Key" → কপি করে এখানে পেস্ট করুন।<br>
+        🔒 key শুধু এই ফোনে সেভ হবে, কোথাও পাঠানো হবে না।
+      </p>
+    </div>
+    ${existing ? `
+      <div style="padding:10px;background:var(--green-soft);border-radius:var(--r-sm);font-size:12.5px;color:var(--green);margin-bottom:10px;">
+        ✅ বর্তমানে সেট আছে: <code style="font-size:11.5px;">…${esc(existing.slice(-8))}</code>
+      </div>
+      <button class="btn btn-danger btn-block" id="geminiKeyRemoveBtn" type="button">
+        🗑️ বর্তমান key মুছুন
+      </button>` : ''}
+  `;
+
+  const back = $('#modalBackdrop');
+  $('#modalTitle').textContent = '🔑 Gemini API Key';
+  $('#modalBody').innerHTML = bodyHTML;
+  $('#modalOk').textContent = '💾 সেভ করুন';
+  $('#modalCancel').textContent = 'বাতিল';
+
+  const close = () => {
+    back.classList.remove('show');
+    $('#modalOk').removeEventListener('click', onSave);
+    $('#modalCancel').removeEventListener('click', close);
+    $('#modalClose').removeEventListener('click', close);
+  };
+
+  const onSave = async () => {
+    const keyEl = $('#geminiKeyInput');
+    const key = (keyEl?.value || '').trim();
+
+    if (!key) {
+      toast('Key লিখুন', 'warn');
+      keyEl?.focus();
+      return;
+    }
+    if (key.length < 20) {
+      toast('Key খুব ছোট — পুরোটা পেস্ট করুন', 'warn');
+      return;
+    }
+
+    await DB.setSetting('geminiApiKey', key);
+    toast('✅ API key সেভ হয়েছে', 'success');
     await refreshAiKeyStatus();
-    return;
-  }
-  if (key.trim().length < 20) { toast('Key ছোট — যাচাই করুন', 'warn'); return; }
-  await DB.setSetting('geminiApiKey', key.trim());
-  toast('✅ API key সেভ', 'success');
-  await refreshAiKeyStatus();
+    close();
+  };
+
+  $('#modalOk').addEventListener('click', onSave);
+  $('#modalCancel').addEventListener('click', close);
+  $('#modalClose').addEventListener('click', close);
+
+  // ফোকাস ও remove বাটন হ্যান্ডল
+  setTimeout(() => {
+    $('#geminiKeyInput')?.focus();
+    $('#geminiKeyRemoveBtn')?.addEventListener('click', async () => {
+      await DB.delSetting('geminiApiKey');
+      toast('Key মুছে ফেলা হয়েছে', 'success');
+      await refreshAiKeyStatus();
+      close();
+    });
+  }, 50);
+
+  back.classList.add('show');
 }
 
 async function refreshAiKeyStatus() {
