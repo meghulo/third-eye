@@ -277,6 +277,61 @@ input[type="date"], input[type="time"] {
     transition-duration: .01ms !important;
   }
 }
+
+/* ═══ ড্রাফট পলিশার ═══ */
+.draft-panel{ display: flex; flex-direction: column; gap: 12px; }
+.draft-panel textarea{
+  width: 100%; min-height: 200px; padding: 14px;
+  font-size: 14.5px; line-height: 1.7;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  border-radius: var(--r-sm); border: 1px solid var(--line2);
+  background: var(--white); color: var(--ink); resize: vertical;
+}
+.draft-panel textarea:focus{
+  border-color: var(--navy2);
+  box-shadow: 0 0 0 3px rgba(26,61,107,.1);
+}
+.draft-actions{ display: flex; gap: 8px; flex-wrap: wrap; }
+
+.polished-view{
+  padding: 20px 18px; background: var(--white);
+  border: 1px solid var(--line); border-radius: var(--r);
+  font-family: 'Noto Sans Bengali', sans-serif;
+  line-height: 1.85; min-height: 180px;
+  font-size: 15px; color: var(--ink);
+  outline: none; white-space: pre-wrap; word-wrap: break-word;
+}
+.polished-view:focus{
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212,168,67,.15);
+}
+.polished-view h2{
+  font-size: 21px; font-weight: 700; line-height: 1.35;
+  color: var(--ink); margin-bottom: 10px;
+}
+.polished-view .pv-byline{
+  font-size: 13px; color: var(--ink3);
+  font-style: italic; margin-bottom: 18px;
+  padding-bottom: 12px; border-bottom: 1px dashed var(--line);
+}
+.polished-view .pv-body{
+  font-size: 15px; line-height: 1.85; color: var(--ink2);
+  white-space: pre-wrap;
+}
+.polished-view .pv-body p{ margin-bottom: 14px; }
+
+.rs-body h2, .rs-body h3{ color: var(--navy); line-height: 1.35; margin-bottom: 8px; }
+.rs-body h2{ font-size: 20px; font-weight: 700; }
+.rs-body h3{ font-size: 16px; font-weight: 700; }
+.rs-body blockquote{
+  border-left: 3px solid var(--gold);
+  padding: 8px 14px; margin: 10px 0;
+  background: var(--gold-soft); border-radius: 6px;
+  color: var(--ink2); font-style: italic;
+}
+.rs-body ul, .rs-body ol{ padding-left: 22px; margin: 8px 0; }
+.rs-body li{ margin-bottom: 4px; }
+.rs-body p{ margin-bottom: 10px; }
 /* ═══════════════════════════════════════════════
    কার্ড
    ═══════════════════════════════════════════════ */
@@ -946,6 +1001,99 @@ input[type="date"], input[type="time"] {
 .report-meta .rm-row:last-child{ border: none; }
 .report-meta .rm-key{ color: var(--gold); font-weight: 600; }
 .report-meta .rm-val{ color: var(--white); font-weight: 500; }
+/* ═══ ড্রাফট পলিশার ═══ */
+.draft-panel{
+  display: flex; flex-direction: column; gap: 12px;
+}
+.draft-panel textarea{
+  width: 100%; min-height: 200px;
+  padding: 14px; font-size: 14.5px; line-height: 1.7;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  border-radius: var(--r-sm); border: 1px solid var(--line2);
+  background: var(--white); color: var(--ink);
+  resize: vertical;
+}
+.draft-panel textarea:focus{
+  border-color: var(--navy2);
+  box-shadow: 0 0 0 3px rgba(26,61,107,.1);
+}
+.draft-actions{
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+
+/* পলিশড প্রিভিউ — প্লেইন টেক্সট */
+.polished-view{
+  padding: 20px 18px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  font-family: 'Noto Sans Bengali', sans-serif;
+  line-height: 1.85;
+  min-height: 180px;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.polished-view:focus{
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212,168,67,.15);
+}
+.polished-view h2{
+  font-size: 21px; font-weight: 700; line-height: 1.35;
+  color: var(--ink); margin-bottom: 10px;
+}
+.polished-view .pv-byline{
+  font-size: 13px; color: var(--ink3);
+  font-style: italic;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--line);
+}
+.polished-view .pv-body{
+  font-size: 15px; line-height: 1.85; color: var(--ink2);
+  white-space: pre-wrap;
+}
+.polished-view .pv-body p{
+  margin-bottom: 14px;
+}
+
+/* রিপোর্ট সেকশন — আরও টেক্সট-সদৃশ */
+.rs-body h2, .rs-body h3{
+  color: var(--navy);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+.rs-body h2{ font-size: 20px; font-weight: 700; }
+.rs-body h3{ font-size: 16px; font-weight: 700; }
+.rs-body blockquote{
+  border-left: 3px solid var(--gold);
+  padding: 8px 14px;
+  margin: 10px 0;
+  background: var(--gold-soft);
+  border-radius: 6px;
+  color: var(--ink2);
+  font-style: italic;
+}
+.rs-body ul, .rs-body ol{
+  padding-left: 22px;
+  margin: 8px 0;
+}
+.rs-body li{ margin-bottom: 4px; }
+.rs-body p{ margin-bottom: 10px; }
+
+/* টোকেন ব্যাজ (পরিবর্তন দেখানোর জন্য) */
+.diff-badge{
+  display: inline-block;
+  padding: 1px 7px;
+  background: var(--gold-soft);
+  color: var(--gold-dark);
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  margin-left: 4px;
+}
 </style>
 </head>
 <body>
@@ -1162,6 +1310,7 @@ input[type="date"], input[type="time"] {
     <button class="chip"        data-cdtab="media"     type="button">🎬 মিডিয়া</button>
     <button class="chip"        data-cdtab="timeline"  type="button">🕐 টাইমলাইন</button>
     <button class="chip"        data-cdtab="report"    type="button">📄 রিপোর্ট</button>
+    <button class="chip"        data-cdtab="draft"     type="button">✍️ কাচা ড্রাফট</button>
   </div>
 
   <!-- 🔹 ট্যাব কনটেইনার -->
@@ -1334,6 +1483,52 @@ input[type="date"], input[type="time"] {
       <button class="btn btn-ghost btn-sm" data-export="html" type="button">🌐 HTML</button>
       <button class="btn btn-ghost btn-sm" data-export="txt"  type="button">📝 TXT</button>
       <button class="btn btn-ghost btn-sm" data-export="copy" type="button">📋 কপি</button>
+    </div>
+  </div>
+
+  <!-- ট্যাব ৬: কাচা ড্রাফট পলিশার -->
+  <div class="cd-tab-panel hidden" data-cdpanel="draft">
+    <div class="draft-panel">
+
+      <div class="card" style="margin:0;">
+        <div class="section-head" style="margin:0 0 10px;">
+          <h2>✍️ কাচা লেখা (রাফ ড্রাফট)</h2>
+          <span class="badge badge-info" id="draftCharCount">০ অক্ষর</span>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink3);line-height:1.55;margin-bottom:10px;">
+          আপনার হাতে লেখা, ছেঁড়া-ফাঁড়া, এলোমেলো ড্রাফট এখানে পেস্ট করুন। 
+          তারিখ, সময়, অতিরিক্ত শব্দ — যাই থাকুক। অ্যাপ নিজেই পরিষ্কার করবে।
+        </p>
+        <textarea id="draftRoughInput" 
+          placeholder="উদাহরণ:&#10;কাপ্তাইয়ে ফরেস্ট গার্ডদের প্রশিক্ষণ শুরু&#10;ঝুলন দত্ত, কাপ্তাই প্রতিনিধি:&#10;রাঙামাটির কাপ্তাই বন উন্নয়ন প্রশিক্ষণ কেন্দ্রে..."></textarea>
+      </div>
+
+      <div class="draft-actions">
+        <button class="btn btn-ghost grow" id="draftPolishBtn" type="button">🧹 ক্লিন</button>
+        <button class="btn btn-gold grow" id="draftAiPolishBtn" type="button">✨ AI পলিশ</button>
+        <button class="btn btn-primary" id="draftSaveBtn" type="button">💾</button>
+        <button class="btn btn-ghost" id="draftClearBtn" type="button" title="সব মুছুন">🗑️</button>
+      </div>
+
+      <div class="card" style="margin:0;">
+        <div class="section-head" style="margin:0 0 10px;">
+          <h2>📝 পলিশড ড্রাফট</h2>
+          <span class="badge badge-gold">এডিটযোগ্য</span>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink3);line-height:1.55;margin-bottom:10px;">
+          নিচের লেখা সরাসরি এডিট করতে পারবেন — ক্লিক করে লিখুন।
+        </p>
+        <div class="polished-view" id="draftPolishedView" contenteditable="true"></div>
+      </div>
+
+      <div class="row" style="gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm" id="draftCopyBtn" type="button">📋 কপি</button>
+        <button class="btn btn-ghost btn-sm" id="draftTxtBtn" type="button">📝 TXT</button>
+        <button class="btn btn-ghost btn-sm" id="draftHtmlBtn" type="button">🌐 HTML</button>
+        <button class="btn btn-ghost btn-sm" id="draftPrintBtn" type="button">📄 প্রিন্ট/PDF</button>
+        <button class="btn btn-ghost btn-sm" id="draftPushToReportBtn" type="button">📤 রিপোর্টে যুক্ত করুন</button>
+      </div>
+
     </div>
   </div>
 
@@ -1526,6 +1721,27 @@ input[type="date"], input[type="time"] {
     </div>
     <div class="li-tail">›</div>
   </button>
+
+  <!-- AI সেটিংস -->
+  <div class="section-head">
+    <h2>✨ AI সেটিংস</h2>
+  </div>
+  <button class="list-item" id="moreAiKeyBtn" type="button" style="width:100%;text-align:left;">
+    <div class="li-ico">🔑</div>
+    <div class="li-body">
+      <div class="li-title">Gemini API Key</div>
+      <div class="li-sub" id="moreAiKeyStatus">সেট করা হয়নি</div>
+    </div>
+    <div class="li-tail">›</div>
+  </button>
+  <div class="card" style="padding:12px;background:var(--gold-soft);border-color:#f0dba8;">
+    <div style="font-size:11.5px;color:var(--gold-dark);line-height:1.6;">
+      💡 <b>কীভাবে key পাবেন:</b><br>
+      <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--navy);text-decoration:underline;">aistudio.google.com/apikey</a> → "Create API Key" → <br>
+      ফ্রি — মাসে ১৫০০ রিকোয়েস্ট।<br><br>
+      🔒 key শুধু আপনার ফোনে সেভ হবে, কোথাও পাঠানো হবে না।
+    </div>
+  </div>
 
   <!-- ব্যাকআপ -->
   <div class="section-head">
@@ -2706,6 +2922,7 @@ async function openCase(caseId) {
       : formatDate(c.createdAt);
 
     // ট্যাব রিসেট
+    
     $$('#cdTabs .chip').forEach(ch => ch.classList.toggle('active', ch.dataset.cdtab === 'summary'));
     $$('.cd-tab-panel').forEach(p => p.classList.toggle('hidden', p.dataset.cdpanel !== 'summary'));
 
@@ -5108,6 +5325,464 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — কাচা ড্রাফট পলিশার (অফলাইন)
+   ═══════════════════════════════════════════════ */
+
+const DraftPolisher = {
+  polish(rough) {
+    if (!rough || !rough.trim()) return null;
+    const lines = rough.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return null;
+    let idx = 0;
+    let headline = this._cleanHeadline(lines[idx] || '');
+    idx++;
+    let byline = '';
+    if (idx < lines.length) {
+      const bl = this._extractByline(lines[idx]);
+      if (bl) { byline = bl; idx++; }
+    }
+    const bodyLines = lines.slice(idx);
+    const body = this._processBody(bodyLines);
+    return { headline, byline, body };
+  },
+
+  _cleanHeadline(t) {
+    return t.replace(/[:：।]\s*$/, '').replace(/^["'`]+|["'`]+$/g, '').replace(/\s+/g, ' ').trim();
+  },
+
+  _extractByline(line) {
+    if (!/(প্রতিনিধি|সংবাদদাতা|কর্তৃক|স্টাফ)/.test(line)) return '';
+    let t = line.replace(/[:：].*$/, '').replace(/\(\s*[^)]+\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+    const parts = t.split(',').map(p => p.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+      const place = parts[parts.length - 1].replace(/প্রতিনিধি|সংবাদদাতা/g, '').trim();
+      return `${place} প্রতিনিধি`;
+    }
+    return t;
+  },
+
+  _processBody(lines) {
+    let paragraphs = [];
+    lines.forEach(line => {
+      if (!line) return;
+      if (line.length < 25 && paragraphs.length) {
+        paragraphs[paragraphs.length - 1] += ' ' + line;
+      } else {
+        paragraphs.push(line);
+      }
+    });
+    paragraphs = paragraphs.map(p => this._cleanParagraph(p));
+    const final = [];
+    paragraphs.forEach(p => {
+      const sentences = this._splitSentences(p);
+      if (sentences.length >= 5) {
+        final.push(sentences.slice(0, 3).join(' '));
+        if (sentences.length > 3) final.push(sentences.slice(3).join(' '));
+      } else {
+        final.push(p);
+      }
+    });
+    return final.filter(x => x.trim()).join('\n\n');
+  },
+
+  _cleanParagraph(p) {
+    return p
+      .replace(/\(\s*\d+[^)]*?(জানু|ফেব্রু|মার্চ|এপ্রিল|মে|জুন|জুলাই|আগস্ট|সেপ্টে|অক্টো|নভে|ডিসে)[^)]*?\)/gi, '')
+      .replace(/(সকাল|বিকাল|বিকেল|দুপুর|রাত|ভোর)\s*\d+\s*টায়/g, '$1ে')
+      .replace(/(বার)\s+\(\s*\d+[^)]*?\)/g, '$1')
+      .replace(/\s+/g, ' ')
+      .replace(/^[\s,।]+/, '')
+      .trim();
+  },
+
+  _splitSentences(text) {
+    return text.split(/(?<=[।?!])\s+/).map(s => s.trim()).filter(Boolean);
+  },
+
+  toHTML(draft) {
+    if (!draft) return '';
+    const { headline, byline, body } = draft;
+    const bodyHTML = (body || '').split(/\n\n+/).filter(p => p.trim())
+      .map(p => `<p>${this._escape(p)}</p>`).join('');
+    return `<h2>${this._escape(headline)}</h2>${byline ? `<div class="pv-byline">${this._escape(byline)}</div>` : ''}<div class="pv-body">${bodyHTML}</div>`;
+  },
+
+  _escape(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+};
+
+/* ═══ ড্রাফট লোড / সেভ ═══ */
+async function loadDraft() {
+  if (!State.caseId) return;
+  const c = await DB.get('cases', State.caseId);
+  const rough = $('#draftRoughInput');
+  const view = $('#draftPolishedView');
+  if (!rough || !view) return;
+  rough.value = c?.roughDraft || '';
+  view.innerHTML = c?.polishedDraftHTML || '';
+  updateDraftCharCount();
+}
+
+async function autoSaveDraft() {
+  if (!State.caseId) return;
+  const rough = $('#draftRoughInput')?.value || '';
+  const html = $('#draftPolishedView')?.innerHTML || '';
+  const c = await DB.get('cases', State.caseId);
+  if (!c) return;
+  c.roughDraft = rough;
+  c.polishedDraftHTML = html;
+  c.updatedAt = Date.now();
+  await DB.put('cases', c);
+  State.caseData = c;
+}
+
+function updateDraftCharCount() {
+  const v = $('#draftRoughInput')?.value || '';
+  const el = $('#draftCharCount');
+  if (el) el.textContent = `${bnNum(v.length)} অক্ষর`;
+}
+
+async function runPolish() {
+  const rough = $('#draftRoughInput')?.value || '';
+  if (!rough.trim()) { toast('আগে কাচা লেখা পেস্ট করুন', 'warn'); return; }
+  const draft = DraftPolisher.polish(rough);
+  if (!draft) { toast('পলিশ করা গেল না', 'error'); return; }
+  $('#draftPolishedView').innerHTML = DraftPolisher.toHTML(draft);
+  await autoSaveDraft();
+  toast('✨ পলিশ সম্পন্ন', 'success');
+}
+
+async function clearDraft() {
+  const ok = await confirmDialog('ড্রাফট মুছবেন?', 'কাচা ও পলিশড — দুটোই মুছে যাবে।');
+  if (!ok) return;
+  $('#draftRoughInput').value = '';
+  $('#draftPolishedView').innerHTML = '';
+  await autoSaveDraft();
+  updateDraftCharCount();
+  toast('মুছে ফেলা হয়েছে', 'success');
+}
+
+async function saveDraftManual() {
+  await autoSaveDraft();
+  toast('💾 সেভ হয়েছে', 'success');
+}
+
+async function copyDraft() {
+  const view = $('#draftPolishedView');
+  if (!view || !view.innerText.trim()) { toast('কিছু নেই', 'warn'); return; }
+  const text = view.innerText;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('📋 কপি হয়েছে', 'success');
+  } catch (_) {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); ta.remove();
+    toast('📋 কপি হয়েছে', 'success');
+  }
+}
+
+function downloadDraftTxt() {
+  const view = $('#draftPolishedView');
+  if (!view || !view.innerText.trim()) { toast('কিছু নেই', 'warn'); return; }
+  const title = (State.caseData?.title || 'draft').slice(0, 40);
+  downloadText(view.innerText, `${title}-${Date.now()}.txt`);
+  toast('📝 ডাউনলোড', 'success');
+}
+
+function downloadDraftHtml() {
+  const view = $('#draftPolishedView');
+  if (!view || !view.innerHTML.trim()) { toast('কিছু নেই', 'warn'); return; }
+  const title = State.caseData?.title || 'Draft';
+  const html = `<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><title>${DraftPolisher._escape(title)}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet"><style>body{font-family:'Noto Sans Bengali',serif;max-width:720px;margin:40px auto;padding:24px;line-height:1.85;color:#0d1421;background:#fff;}h2{font-size:24px;font-weight:700;line-height:1.35;margin-bottom:12px;}.pv-byline{font-style:italic;color:#6b7583;font-size:14px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px dashed #e4e8ef;}.pv-body p{margin-bottom:14px;font-size:16px;color:#3d4655;}</style></head><body>${view.innerHTML}</body></html>`;
+  downloadText(html, `${title}-${Date.now()}.html`, 'text/html');
+  toast('🌐 ডাউনলোড', 'success');
+}
+
+function printDraft() {
+  const view = $('#draftPolishedView');
+  if (!view || !view.innerHTML.trim()) { toast('কিছু নেই', 'warn'); return; }
+  const title = State.caseData?.title || 'Draft';
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><title>${DraftPolisher._escape(title)}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet"><style>@page{margin:20mm 18mm;}body{font-family:'Noto Sans Bengali',serif;margin:0;padding:0;line-height:1.85;color:#000;}h2{font-size:22px;font-weight:700;margin-bottom:10px;}.pv-byline{font-style:italic;color:#555;font-size:13px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid #ccc;}.pv-body p{margin-bottom:12px;font-size:15px;text-align:justify;}</style></head><body>${view.innerHTML}</body></html>`);
+  w.document.close();
+  setTimeout(() => { w.focus(); w.print(); }, 400);
+}
+
+async function pushDraftToReport() {
+  const view = $('#draftPolishedView');
+  if (!view || !view.innerHTML.trim()) { toast('আগে পলিশ করুন', 'warn'); return; }
+  const ok = await confirmDialog('রিপোর্টে যুক্ত করবেন?', 'আগের রিপোর্ট থাকলে সেটি বদলে যাবে।');
+  if (!ok) return;
+
+  const headline = view.querySelector('h2')?.innerText || State.caseData?.title || '';
+  const byline = view.querySelector('.pv-byline')?.innerText || '';
+  const bodyText = view.querySelector('.pv-body')?.innerText || view.innerText;
+
+  const sections = [
+    { key: 'headline', title: '১. হেডলাইন', body: `<h2>${DraftPolisher._escape(headline)}</h2>` },
+    { key: 'lead', title: '২. লিড', body: `<p>${DraftPolisher._escape((bodyText || '').split('\n\n')[0] || '')}</p>` },
+    { key: 'story', title: '৩. মূল বিবরণ', body: (bodyText || '').split('\n\n').slice(1).map(p => `<p>${DraftPolisher._escape(p)}</p>`).join('') || '' },
+    { key: 'context', title: '৪. প্রেক্ষাপট', body: '' },
+    { key: 'conclusion', title: '৫. উপসংহার', body: '' }
+  ];
+
+  const existing = await DB.getByIndex('reports', 'caseId', State.caseId);
+  for (const r of existing) await DB.delete('reports', r.id);
+
+  const report = {
+    id: uid('rep'), caseId: State.caseId, headline, byline,
+    status: 'draft', sections, quoteCount: 0,
+    createdAt: Date.now(), updatedAt: Date.now()
+  };
+  await DB.put('reports', report);
+  State.currentReport = report;
+  toast('📤 রিপোর্টে যুক্ত হয়েছে', 'success');
+
+  $$('#cdTabs .chip').forEach(c => c.classList.toggle('active', c.dataset.cdtab === 'report'));
+  $$('.cd-tab-panel').forEach(p => p.classList.toggle('hidden', p.dataset.cdpanel !== 'report'));
+  await loadReport();
+}
+
+function bindDraftEvents() {
+  $('#draftPolishBtn')?.addEventListener('click', runPolish);
+  $('#draftSaveBtn')?.addEventListener('click', saveDraftManual);
+  $('#draftClearBtn')?.addEventListener('click', clearDraft);
+  $('#draftCopyBtn')?.addEventListener('click', copyDraft);
+  $('#draftTxtBtn')?.addEventListener('click', downloadDraftTxt);
+  $('#draftHtmlBtn')?.addEventListener('click', downloadDraftHtml);
+  $('#draftPrintBtn')?.addEventListener('click', printDraft);
+  $('#draftPushToReportBtn')?.addEventListener('click', pushDraftToReport);
+
+  const rough = $('#draftRoughInput');
+  rough?.addEventListener('input', () => {
+    updateDraftCharCount();
+    clearTimeout(rough._saveTimer);
+    rough._saveTimer = setTimeout(autoSaveDraft, 1200);
+  });
+
+  const view = $('#draftPolishedView');
+  view?.addEventListener('blur', () => {
+    clearTimeout(view._saveTimer);
+    view._saveTimer = setTimeout(autoSaveDraft, 500);
+  });
+  view?.addEventListener('input', () => {
+    clearTimeout(view._saveTimer);
+    view._saveTimer = setTimeout(autoSaveDraft, 1500);
+  });
+
+  const draftTabBtn = document.querySelector('#cdTabs [data-cdtab="draft"]');
+  draftTabBtn?.addEventListener('click', () => setTimeout(loadDraft, 30));
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(bindDraftEvents, 150));
+} else {
+  setTimeout(bindDraftEvents, 150);
+}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   থার্ড আই — AI পলিশ (Gemini)
+   ═══════════════════════════════════════════════ */
+
+const AI_EDITOR_PROMPT = `Role: আপনি একটি শীর্ষস্থানীয় জাতীয় সংবাদমাধ্যমের অত্যন্ত দক্ষ ও পেশাদার 'বার্তা সম্পাদক' (News Editor)।
+Task: আপনার কাজ হলো স্থানীয় প্রতিনিধিদের পাঠানো কাঁচা (Raw) সংবাদ প্রতিবেদনগুলোকে সম্পাদনা করে প্রকাশযোগ্য, সংক্ষিপ্ত ও আকর্ষণীয় করে তোলা।
+
+Editing Rules (কঠোরভাবে অনুসরণীয়):
+১. ইনভার্টেড পিরামিড স্টাইল: খবরের সবচেয়ে গুরুত্বপূর্ণ তথ্য (কে, কী, কোথায়, কখন, কেন) প্রথম অনুচ্ছেদে (Lead) রাখুন। এরপর অপেক্ষাকৃত কম গুরুত্বপূর্ণ বা বিস্তারিত পটভূমি দিন।
+২. সংক্ষিপ্ততা ও বস্তুনিষ্ঠতা: অপ্রয়োজনীয় বিশেষণ, পুনরাবৃত্তি, অতিরিক্ত প্রশংসা ও অতিরঞ্জিত শব্দ সম্পূর্ণ বাদ দিন। প্রতিবেদন হবে টু-দ্য-পয়েন্ট এবং পেশাদার।
+৩. পদবি ও পরিভাষা: 'ভারপ্রাপ্ত কর্মকর্তা' এর পরিবর্তে শুধুমাত্র 'ওসি' ব্যবহার করবেন। কোনো র‍্যালি, সভা বা কর্মসূচির ক্ষেত্রে কার 'নেতৃত্বে' হয়েছে, সেটির চেয়ে 'কার আয়োজনে' বা 'উদ্যোগে' হয়েছে, সেটিকে বেশি ফোকাস করবেন।
+৪. তথ্য অপরিবর্তিত রাখা: স্থান, সময়, ব্যক্তির নাম, পদবি বা পরিসংখ্যান কোনোভাবেই পরিবর্তন বা ভুল করা যাবে না।
+
+Output Format (ঠিক এই কাঠামোতে আউটপুট দেবেন, কোনো ব্যাখ্যা বা মন্তব্য ছাড়া শুধু নিচের ফরম্যাট):
+**[এখানে অত্যন্ত সংক্ষিপ্ত ও আকর্ষণীয় শিরোনাম বসবে]**
+
+স্থান (যেমন: কাপ্তাই প্রতিনিধি)
+
+[প্রথম অনুচ্ছেদ: লিড বা মূল খবর]
+
+[দ্বিতীয়/তৃতীয় অনুচ্ছেদ: বিস্তারিত বিবরণ]
+
+**ছবির ক্যাপশন:** [যদি মূল টেক্সটে ছবির ক্যাপশন থাকে, তবে সেটি এখানে নির্ভুলভাবে বসবে। না থাকলে এই লাইনটি দেওয়ার কোনো প্রয়োজন নেই।]
+
+---
+
+RAW REPORT:
+`;
+
+async function callGeminiAI(rawText) {
+  const apiKey = await DB.getSetting('geminiApiKey', null);
+  if (!apiKey) {
+    toast('আগে API key সেট করুন', 'warn', 3000);
+    await setGeminiKey();
+    return null;
+  }
+  if (!navigator.onLine) {
+    toast('⚠️ AI পলিশের জন্য ইন্টারনেট দরকার', 'error', 3000);
+    return null;
+  }
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+  const body = {
+    contents: [{ parts: [{ text: AI_EDITOR_PROMPT + rawText }] }],
+    generationConfig: { temperature: 0.25, maxOutputTokens: 4096, topP: 0.9 },
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+    ]
+  };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error('Gemini:', res.status, errText);
+    if (res.status === 400) throw new Error('API key ভুল');
+    if (res.status === 403) throw new Error('API key অনুমতি নেই');
+    if (res.status === 429) throw new Error('রিকোয়েস্ট সীমা শেষ, একটু পরে চেষ্টা করুন');
+    throw new Error('API ত্রুটি: ' + res.status);
+  }
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('উত্তর খালি এসেছে');
+  return text.trim();
+}
+
+function aiTextToHTML(aiText) {
+  if (!aiText) return '';
+  let text = aiText.replace(/\*\*(.+?)\*\*/g, '$1').replace(/^#+\s*/gm, '').trim();
+  const lines = text.split(/\r?\n/).map(l => l.trim());
+
+  let headline = '';
+  let byline = '';
+  let caption = '';
+  const bodyParas = [];
+  let state = 'head';
+
+  for (const line of lines) {
+    if (!line) continue;
+    const capMatch = line.match(/^ছবির?\s*ক্যাপশন\s*[:：]?\s*(.+)$/i);
+    if (capMatch) { caption = capMatch[1].trim(); state = 'caption'; continue; }
+    if (state === 'head' && !headline) { headline = line; state = 'byline'; continue; }
+    if (state === 'byline' && !byline) {
+      if (line.length < 50 && /(প্রতিনিধি|সংবাদদাতা|স্টাফ)/.test(line)) {
+        byline = line; state = 'body'; continue;
+      }
+      state = 'body';
+    }
+    bodyParas.push(line);
+  }
+
+  const esc = (s) => String(s || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const bodyHTML = bodyParas.filter(p => p.trim())
+    .map(p => `<p>${esc(p)}</p>`).join('');
+
+  return `
+    <h2>${esc(headline)}</h2>
+    ${byline ? `<div class="pv-byline">${esc(byline)}</div>` : ''}
+    <div class="pv-body">${bodyHTML}</div>
+    ${caption ? `<div class="pv-byline" style="margin-top:16px;font-style:normal;font-size:12.5px;"><b>ছবির ক্যাপশন:</b> ${esc(caption)}</div>` : ''}
+  `;
+}
+
+async function runAiPolish() {
+  const rough = $('#draftRoughInput')?.value || '';
+  if (!rough.trim()) { toast('আগে কাচা লেখা পেস্ট করুন', 'warn'); return; }
+
+  const btn = $('#draftAiPolishBtn');
+  const oldText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ চলছে...';
+
+  const view = $('#draftPolishedView');
+  view.innerHTML = `
+    <div style="text-align:center;padding:30px 10px;color:var(--ink3);">
+      <div style="font-size:34px;margin-bottom:8px;">✨</div>
+      <div style="font-size:14px;font-weight:600;color:var(--navy);">AI সম্পাদক কাজ করছেন...</div>
+      <div style="font-size:12px;margin-top:6px;">১০-২০ সেকেন্ড লাগতে পারে</div>
+    </div>`;
+
+  try {
+    const aiOut = await callGeminiAI(rough);
+    if (!aiOut) { view.innerHTML = ''; return; }
+    view.innerHTML = aiTextToHTML(aiOut);
+    await autoSaveDraft();
+    toast('✅ AI পলিশ সম্পন্ন', 'success');
+  } catch (err) {
+    console.error(err);
+    view.innerHTML = `
+      <div style="padding:20px;background:var(--red-soft);border-radius:var(--r-sm);color:var(--red);font-size:13px;">
+        <b>⚠️ সমস্যা:</b> ${esc(err.message || 'অজানা ত্রুটি')}<br>
+        <span style="font-size:12px;color:var(--ink3);">আরও → AI সেটিংসে গিয়ে key যাচাই করুন।</span>
+      </div>`;
+    toast('AI পলিশ ব্যর্থ', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = oldText;
+  }
+}
+
+async function setGeminiKey() {
+  const existing = await DB.getSetting('geminiApiKey', null);
+  const msg = existing ? 'বর্তমান key মুছে নতুন দিন (বাতিল করতে খালি রাখুন):' : 'Gemini API key পেস্ট করুন:';
+  const key = prompt(msg, '');
+  if (key === null) return;
+  if (!key.trim()) {
+    await DB.delSetting('geminiApiKey');
+    toast('Key মুছে ফেলা হয়েছে', 'success');
+    await refreshAiKeyStatus();
+    return;
+  }
+  if (key.trim().length < 20) { toast('Key ছোট — যাচাই করুন', 'warn'); return; }
+  await DB.setSetting('geminiApiKey', key.trim());
+  toast('✅ API key সেভ', 'success');
+  await refreshAiKeyStatus();
+}
+
+async function refreshAiKeyStatus() {
+  const k = await DB.getSetting('geminiApiKey', null);
+  const el = $('#moreAiKeyStatus');
+  if (el) el.textContent = k ? `✅ সেট (…${k.slice(-6)})` : 'সেট করা হয়নি';
+}
+
+function bindAiEvents() {
+  $('#draftAiPolishBtn')?.addEventListener('click', runAiPolish);
+  $('#moreAiKeyBtn')?.addEventListener('click', setGeminiKey);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(bindAiEvents, 200));
+} else {
+  setTimeout(bindAiEvents, 200);
+}
+
+/* renderMore কে wrap করি যেন AI status রিফ্রেশ হয় */
+(function(){
+  const orig = window.renderMore;
+  if (typeof orig === 'function') {
+    window.renderMore = async function () {
+      await orig.apply(this, arguments);
+      await refreshAiKeyStatus();
+    };
+  }
+})();
 </script>
 </body>
 </html>
