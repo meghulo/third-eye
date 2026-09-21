@@ -3,7 +3,7 @@
    Cache-first strategy for offline support
    ═══════════════════════════════════════════════ */
 
-const CACHE_NAME = 'thirdeye-v1.0.0';
+const CACHE_NAME = 'thirdeye-v1.0.1';
 const RUNTIME_CACHE = 'thirdeye-runtime-v1';
 
 /* যে ফাইলগুলো প্রি-ক্যাশ হবে */
