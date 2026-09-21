@@ -5591,11 +5591,6 @@ if (document.readyState === 'loading') {
 
 <script>
 /* ═══════════════════════════════════════════════
-   থার্ড আই — AI পলিশ (Gemini)
-   ═══════════════════════════════════════════════ */
-
-<script>
-/* ═══════════════════════════════════════════════
    থার্ড আই — AI পলিশ (Gemini v2)
    ═══════════════════════════════════════════════ */
 
@@ -5897,17 +5892,6 @@ window.refreshAiKeyStatus = refreshAiKeyStatus;
 
 console.log('✅ AI module loaded:',
   typeof setGeminiKey, typeof callGeminiAI, typeof runAiPolish);
-</script>
-/* renderMore কে wrap করি যেন AI status রিফ্রেশ হয় */
-(function(){
-  const orig = window.renderMore;
-  if (typeof orig === 'function') {
-    window.renderMore = async function () {
-      await orig.apply(this, arguments);
-      await refreshAiKeyStatus();
-    };
-  }
-})();
 </script>
 </body>
 </html>
