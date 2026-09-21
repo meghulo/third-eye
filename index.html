@@ -5624,12 +5624,17 @@ async function callGeminiAI(rawText) {
     await setGeminiKey();
     return null;
   }
+async function callGeminiAI(rawText) {
+  const apiKey = await DB.getSetting('geminiApiKey', null);
+  if (!apiKey) {
+    toast('আগে API key সেট করুন', 'warn', 3000);
+    await setGeminiKey();
+    return null;
+  }
   if (!navigator.onLine) {
     toast('⚠️ AI পলিশের জন্য ইন্টারনেট দরকার', 'error', 3000);
     return null;
   }
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
 
   const body = {
     contents: [{ parts: [{ text: AI_EDITOR_PROMPT + rawText }] }],
@@ -5642,25 +5647,62 @@ async function callGeminiAI(rawText) {
     ]
   };
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
+  // একাধিক মডেল — যেটা কাজ করবে সেটাই ব্যবহার হবে
+  const models = [
+    'gemini-3.6-flash',
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash'
+  ];
 
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error('Gemini:', res.status, errText);
-    if (res.status === 400) throw new Error('API key ভুল');
-    if (res.status === 403) throw new Error('API key অনুমতি নেই');
-    if (res.status === 429) throw new Error('রিকোয়েস্ট সীমা শেষ, একটু পরে চেষ্টা করুন');
-    throw new Error('API ত্রুটি: ' + res.status);
+  let lastError = null;
+
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    try {
+      console.log(`[AI] চেষ্টা করছি: ${model}`);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.warn(`[AI] ${model} → ${res.status}`, errText);
+        let msg = `HTTP ${res.status}`;
+        try {
+          const errObj = JSON.parse(errText);
+          msg = errObj?.error?.message || msg;
+        } catch (_) {}
+
+        // 404 = এই মডেল নেই, পরেরটা চেষ্টা করি
+        if (res.status === 404) { lastError = new Error(msg); continue; }
+        if (res.status === 400) throw new Error('API key ভুল বা মডেল নেই');
+        if (res.status === 403) throw new Error('API key অনুমতি নেই');
+        if (res.status === 429) throw new Error('কোটা শেষ — একটু পরে চেষ্টা করুন');
+        throw new Error(msg);
+      }
+
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) {
+        const reason = data?.candidates?.[0]?.finishReason || 'unknown';
+        throw new Error('উত্তর খালি (' + reason + ')');
+      }
+      console.log(`[AI] ✅ সফল: ${model}`);
+      toast(`AI কাজ করছে (${model})`, 'success');
+      return text.trim();
+
+    } catch (err) {
+      lastError = err;
+      console.warn(`[AI] ${model} ব্যর্থ:`, err.message);
+      // API key সমস্যা হলে আর চেষ্টা না
+      if (err.message.includes('API key') || err.message.includes('কোটা')) throw err;
+    }
   }
 
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('উত্তর খালি এসেছে');
-  return text.trim();
+  throw lastError || new Error('কোনো মডেলই কাজ করল না');
 }
 
 function aiTextToHTML(aiText) {
